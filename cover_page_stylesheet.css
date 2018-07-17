@@ -1,0 +1,12 @@
+body{
+    margin: 0;
+    height: 100vh;
+    background-image: url('images/climb-finder-background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .5;
+
+}
+.container{
+    opacity: none;
+}
