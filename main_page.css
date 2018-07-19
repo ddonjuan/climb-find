@@ -23,43 +23,43 @@ body{
     position: relative;
     height: 82%;
     top: 2%;
-    border: 1px solid green;
 }
-.map-container{
-    border: 1px solid white;
+#map-container{
     display: inline-block;
-    height: 95%;
-    width: 50%;
-    margin: 1%;
-    background-color: white;
-    opacity: .4;
-    margin-top: 1%;
-
-
+    position: relative;
+    height: 93%;
+    width: 55%;
+    background-color:rgba(255,255,255, 0.3);
+    border-radius: 2%;
+    bottom: 3%;
+    left: .5%;
 }
-.climbing-list-container{
-    border: 1px solid white;
-    display: inline-block;
-    width: 42%;
-    height: 95%;
-    margin: 1%;
-    background-color: white;
-    opacity: .4;
-    margin-left: 3%;
-    margin-top: 1%;
-}
-.map-area{
-    border: 1px solid black;
-    opacity: 1;
-    margin: 1%;
+#map-area{
+    border-radius: 1%;
+
     margin-top:1%;
     height: 97%;
-    color: black;
+    width:97%;
+    margin: 1%;
+    margin-left: 1.5%;
 }
+
+.climbing-list-container{
+    display: inline-block;
+    position: relative;
+    width: 34%;
+    height: 93%;
+    border-radius: 2%;
+    margin-bottom: 1.2%;
+    background-color:rgba(255,255,255, 0.3);
+    left:7%;
+}
+
 .climbing-list{
+    border-radius: 1%;
+
     margin: 1%;
     height: 97%;
-
+    width:97%;
     border: 1px solid black;
-    opacity: 1;
 }
