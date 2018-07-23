@@ -1,4 +1,5 @@
 body{
+    font-family: 'KeepCalm-Medium';
     margin: 0;
     height: 100vh;
     background-image: url('images/climb-finder-background.jpg');
@@ -23,43 +24,75 @@ body{
     position: relative;
     height: 82%;
     top: 2%;
+    overflow: hidden;
 }
 #map-container{
     display: inline-block;
     position: relative;
+    top: 2%;
     height: 93%;
     width: 55%;
-    background-color:rgba(255,255,255, 0.3);
+    background-color: rgba(255,255,255, 0.3);
     border-radius: 2%;
     bottom: 3%;
     left: .5%;
 }
 #map-area{
     border-radius: 1%;
-
     margin-top:1%;
     height: 97%;
     width:97%;
     margin: 1%;
     margin-left: 1.5%;
+    
 }
 
 .climbing-list-container{
     display: inline-block;
     position: relative;
     width: 34%;
-    height: 93%;
+    height: 93.7%;
     border-radius: 2%;
-    margin-bottom: 1.2%;
-    background-color:rgba(255,255,255, 0.3);
-    left:7%;
+    background-color: rgba(255,255,255, 0.3);
+    left: 7%;
+    top:1.5%;
 }
 
 .climbing-list{
+    position: relative;
     border-radius: 1%;
-
     margin: 1%;
     height: 97%;
     width:97%;
-    border: 1px solid black;
+    overflow-y: scroll;
+}
+.list{
+    margin:1%;
+    border:1px solid black;
+    height:25%;
+    background-color: rgba(47,15,39,.9);
+    box-shadow: 0 5px 5px 0 rgba(0,0,0,.4),
+    5px 5px 5px 0 rgba(0,0,0,.4);
+    color: white;
+    border-radius: 1%;
+}
+/* .list-info{
+    margin:2%;
+} */
+.list h4{
+    display: inline-block;
+}
+.list span{
+    float:right;
+    margin:5%;
+}
+.list-info{
+    font-size: .8em;
+}
+@font-face{
+    font-family: 'Mountain';
+    src: url(fonts/Mountain.ttf);
+    font-family: 'KeepCalm-Medium';
+    src: url(fonts/KeepCalm-Medium.ttf)
+
 }
