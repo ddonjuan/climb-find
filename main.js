@@ -2,17 +2,15 @@ $(document).ready(initApp);
 function initApp() {
     $(".submit").click(userLocation);
 }
+var flag = false;
+/***********************GOOGLE API CALLS: START********************************/
 
-/***********************Google API calls********************************/
-// function getLandingButtonText(){
-//     console.log("PDPDFPDPFDFEKJThIS IS THE TEXT");
-//     var landingText = $(".landing-page-text").text();
-//     console.log("this is the text of the landing page: ", landingText);
-//     debugger;
-// }
 function userLocation() {
-
     resetLocationList();
+    if(flag){
+        listInfoAndDirectionsInfoToggle();
+        flag = false;
+    }
     var text = $("input").val();
     $.ajax({
         type: 'GET',
@@ -24,12 +22,12 @@ function userLocation() {
                 lat: response.results[0].geometry.location.lat,
                 lng: response.results[0].geometry.location.lng
             }
-            climbingLocations(coordinates);
+            climbingLocations(coordinates, flag);
         }
-    })
+    });
 }
 
-function climbingLocations(coordinates) {
+function climbingLocations(coordinates, flag) {
     var lat = coordinates.lat;
     var lng = coordinates.lng;
 
@@ -46,7 +44,7 @@ function climbingLocations(coordinates) {
                 climbingLocations.push(response.results[i].geometry.location);
             }
             initMap(coordinates, climbingLocations);
-            displayClimbingInfo(climbingInfo, coordinates);
+            displayClimbingInfo(climbingInfo, coordinates, flag);
             // displayPhotos(photoInfo);
 
         }
@@ -55,7 +53,7 @@ function climbingLocations(coordinates) {
 
 function initMap(coordinates, climbingCoordinates) {
     var options = {
-        zoom: 11,
+        zoom: 10.2,
         center: coordinates,
         disableDefaultUI: true,
     }
@@ -79,81 +77,13 @@ function initMap(coordinates, climbingCoordinates) {
     displayClimbingMarkers(climbingCoordinates, map);
 }
 
-function displayClimbingMarkers(markers, map) {
-    for (var k = 0; k < markers.length; k++) {
-        var climbingMarkers = new google.maps.Marker({
-            position: markers[k],
-            map
-        })
-    }
-    return climbingMarkers;
-}
-
-function displayClimbingInfo(info, origin) {
-    for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
-        const {name, rating, vicinity, opening_hours, geometry} = info[locationInfo]
-        const {lat, lng} = geometry.location;
-        var open = null;
-        console.log("THIS IS THE OPEN FOR LOCATIONS",opening_hours);
-        if(opening_hours === undefined || opening_hours === null){
-            span.text("N/A").css("color", "black");
-        }
-
-        var nameDisplay = reduceNameLength(name);
-        open = opening_hours ? opening_hours.open_now : "N/A";
-        var ratingDisplay = rating;
-        var divContainer = $("<div>").addClass("list");
-        var div = $("<div>").addClass("list-info").attr("data-endpointStart", lat).attr("data-endpointEnd", lng);
-        var h4 = $("<h4>").text(nameDisplay);
-        var span = $("<span>")
- 
-        if (open) {
-            span.text("Open Now").css("color", "green");
-        }
-        else {
-            span.text("Closed").css("color", "red");
-        }
-        // var span = $("<span>").text(open);
-        var h5 = $("<h5>").text(vicinity);
-        var directionsBtn = $("<button>", {
-            'class': 'get-directions',
-            text: 'Let\'s go climb!'
-        });
-
-        div.append(h4, span, h5, directionsBtn);
-
-        $(divContainer).append(div);
-        div.on("click", directionsBtn, function () {
-            var element = this;
-            let start = $(element).attr("data-endpointstart");
-            let end = $(element).attr("data-endpointend");
-            var endLocation = {
-                end,
-                start
-            };
-            console.log("endLocation in dom creation: ", endLocation);
-            calcRoute(origin, endLocation);
-
-        })
-        $(".climbing-list").append(divContainer);
-
-    }
-}
-function resetLocationList() {
-    $(".climbing-list").empty();
-}
-
-function directionsToClimbingLocation(origin, destination) {
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: 'https://maps.googleapis.com/maps/api/directions/json?origin=' + origin + '&destination=' + destination + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg'
-    })
-}
-
 function calcRoute(currentLocation, endLocation) {
     const {lat, lng} = currentLocation;
     const {start, end} = endLocation;
+
+    console.log("THESE ARE THE COORDINATES FOR START AND END DESTINATION: ", currentLocation, endLocation);
+
+    directionsToClimbingLocation(currentLocation, endLocation);
 
     let directionsService = new google.maps.DirectionsService();
     let directionsDisplay = new google.maps.DirectionsRenderer();
@@ -183,6 +113,80 @@ function calcRoute(currentLocation, endLocation) {
     });
 }
 
+function directionsToClimbingLocation(origin, destination) {
+    const {lat, lng} = origin;
+    const{start, end} = destination;
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin='+lat+','+lng+'&destination='+start+ ','+end+'&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        success: function(response){
+            console.log("THIS IS THE RESPONSE FOR DRIVING INSTRUCTIONS: ", response);
+        }
+    })
+}
+/***********************GOOGLE API CALLS: END********************************/
+
+
+function displayClimbingMarkers(markers, map) {
+    for (var k = 0; k < markers.length; k++) {
+        var climbingMarkers = new google.maps.Marker({
+            position: markers[k],
+            map
+        })
+    }
+    return climbingMarkers;
+}
+function displayClimbingInfo(info, origin, flag) {
+    for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
+        const {name, rating, vicinity, opening_hours, geometry} = info[locationInfo]
+        const {lat, lng} = geometry.location;
+        var open = null;
+        if(opening_hours === undefined || opening_hours === null){
+            span.text("N/A").css("color", "black");
+        }
+
+        var nameDisplay = reduceNameLength(name);
+        open = opening_hours ? opening_hours.open_now : "N/A";
+        var ratingDisplay = rating;
+        var divContainer = $("<div>").addClass("list");
+        var div = $("<div>").addClass("list-info");
+        var h4 = $("<h4>").text(nameDisplay);
+        var span = $("<span>")
+ 
+        if (open) {
+            span.text("Open Now").css("color", "green");
+        }
+        else {
+            span.text("Closed").css("color", "red");
+        }
+        var h5 = $("<h5>").text(vicinity);
+        var directionsBtn = $("<button>", {
+            'class': 'get-directions',
+            text: 'Let\'s go climb!'
+        }).attr("data-endpointStart", lat).attr("data-endpointEnd", lng);
+
+        div.append(h4, span, h5, directionsBtn);
+
+        $(divContainer).append(div);
+        directionsBtn.on("click", directionsBtn, function () {
+            listInfoAndDirectionsInfoToggle(flag);
+            var element = this;
+            let start = $(element).attr("data-endpointstart");
+            let end = $(element).attr("data-endpointend");
+            var endLocation = {
+                start,
+                end
+            };
+            console.log("endLocation in dom creation: ", endLocation);
+            calcRoute(origin, endLocation);
+
+        })
+        $(".climbing-list").append(divContainer);
+
+    }
+}
+
 function reduceNameLength(name) {
     if(name.includes('-')){
         let positionToCut = name.indexOf('-');
@@ -190,4 +194,15 @@ function reduceNameLength(name) {
         return newStr;
       }
       return name;
+}
+
+function resetLocationList() {
+    $(".climbing-list").empty();
+}
+// function resetMapContainer(){
+//     $("#map-area").empty();
+// }
+function listInfoAndDirectionsInfoToggle(){
+    flag = true;
+    $(".driving-directions, .climbing-list").toggleClass("hidden");
 }

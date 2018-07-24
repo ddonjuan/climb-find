@@ -51,20 +51,33 @@ body{
     display: inline-block;
     position: relative;
     width: 34%;
-    height: 93.7%;
+    height: 92.7%;
     border-radius: 2%;
     background-color: rgba(255,255,255, 0.3);
     left: 7%;
-    top:1.5%;
+    top:2%;
 }
-
+.inner{
+    position:absolute;
+}
 .climbing-list{
-    position: relative;
     border-radius: 1%;
     margin: 1%;
     height: 97%;
     width:97%;
     overflow-y: scroll;
+
+
+}
+.driving-directions{
+    border-radius: 1%;
+    margin: 1%;
+    height: 97%;
+    width:97%;
+    overflow-y: scroll;
+
+
+
 }
 .list{
     margin:1%;
@@ -103,6 +116,16 @@ body{
     box-shadow: 0 5px 5px 0 rgba(0,0,0,.4),
     5px 5px 5px 0 rgba(0,0,0,.4);
 
+}
+.list-info h4{
+    width: 71%;
+    margin-bottom:0;
+}
+/* .list-info h5{
+    margin: 10px;
+} */
+.hidden{
+    visibility: hidden;
 }
 @font-face{
     font-family: 'Mountain';
