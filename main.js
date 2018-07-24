@@ -11,12 +11,12 @@ function initApp() {
 //     debugger;
 // }
 function userLocation() {
-    
+
     resetLocationList();
     var text = $("input").val();
     $.ajax({
         type: 'GET',
-        dataType:'JSON',
+        dataType: 'JSON',
         url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
         success: function (response) {
             console.log(response);
@@ -39,14 +39,14 @@ function climbingLocations(coordinates) {
         url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=30000&keyword=rockclimbing&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
         success: function (response) {
             var climbingLocations = [];
-            var climbingInfo=response.results;
+            var climbingInfo = response.results;
 
             console.log("This is the reponse array: ", response.results);
             for (var i = 0; i < response.results.length; i++) {
                 climbingLocations.push(response.results[i].geometry.location);
             }
             initMap(coordinates, climbingLocations);
-            displayClimbingInfo(climbingInfo);
+            displayClimbingInfo(climbingInfo, coordinates);
             // displayPhotos(photoInfo);
 
         }
@@ -57,7 +57,7 @@ function initMap(coordinates, climbingCoordinates) {
     var options = {
         zoom: 11,
         center: coordinates,
-        disableDefaultUI: true
+        disableDefaultUI: true,
     }
     var map = new google.maps.Map(document.getElementById('map-area'), options);
     // directionsDisplay.setMap(map);
@@ -67,14 +67,14 @@ function initMap(coordinates, climbingCoordinates) {
         position: coordinates,
         map
     })
-    
+
     function callback(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          var place = results[i];
-          createMarker(results[i]);
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                var place = results[i];
+                createMarker(results[i]);
+            }
         }
-      }
     }
     displayClimbingMarkers(climbingCoordinates, map);
 }
@@ -89,74 +89,105 @@ function displayClimbingMarkers(markers, map) {
     return climbingMarkers;
 }
 
-function displayClimbingInfo(info){
-    for(var locationInfo = 0; locationInfo < info.length; locationInfo++){
-        var endPoint = info[locationInfo].geometry.location;
-        var name = info[locationInfo].name;
-        var open = info[locationInfo].opening_hours.open_now;
-        var rating = info[locationInfo].rating;
-        var address = info[locationInfo].vicinity;
-        var divContainer = $("<div>").addClass("list");
-        var div = $("<div>").addClass("list-info");
-        var h4 = $("<h4>").text(name);
-        var span = $("<span>").text(open);
-        var h5 = $("<h5>").text(address);
-        var directionsBtn = $("<button>",{
-            'class': 'get-directions',
-            text: 'Directions',
-            click: function() {
-                console.log("yeahhhh!!! but this doesn't work for me :(", endPoint);
-            }
-        });
-        
+function displayClimbingInfo(info, origin) {
+    for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
+        const {name, rating, vicinity, opening_hours, geometry} = info[locationInfo]
+        const {lat, lng} = geometry.location;
+        var open = null;
+        console.log("THIS IS THE OPEN FOR LOCATIONS",opening_hours);
+        if(opening_hours === undefined || opening_hours === null){
+            span.text("N/A").css("color", "black");
+        }
 
-        div.append(h4,span,h5, directionsBtn);
+        var nameDisplay = reduceNameLength(name);
+        open = opening_hours ? opening_hours.open_now : "N/A";
+        var ratingDisplay = rating;
+        var divContainer = $("<div>").addClass("list");
+        var div = $("<div>").addClass("list-info").attr("data-endpointStart", lat).attr("data-endpointEnd", lng);
+        var h4 = $("<h4>").text(nameDisplay);
+        var span = $("<span>")
+ 
+        if (open) {
+            span.text("Open Now").css("color", "green");
+        }
+        else {
+            span.text("Closed").css("color", "red");
+        }
+        // var span = $("<span>").text(open);
+        var h5 = $("<h5>").text(vicinity);
+        var directionsBtn = $("<button>", {
+            'class': 'get-directions',
+            text: 'Let\'s go climb!'
+        });
+
+        div.append(h4, span, h5, directionsBtn);
+
         $(divContainer).append(div);
+        div.on("click", directionsBtn, function () {
+            var element = this;
+            let start = $(element).attr("data-endpointstart");
+            let end = $(element).attr("data-endpointend");
+            var endLocation = {
+                end,
+                start
+            };
+            console.log("endLocation in dom creation: ", endLocation);
+            calcRoute(origin, endLocation);
+
+        })
         $(".climbing-list").append(divContainer);
 
     }
 }
-function resetLocationList(){
+function resetLocationList() {
     $(".climbing-list").empty();
 }
 
-function directionsToClimbingLocation(origin, destination){
+function directionsToClimbingLocation(origin, destination) {
     $.ajax({
-        type:'GET',
+        type: 'GET',
         dataType: 'json',
-        url: 'https://maps.googleapis.com/maps/api/directions/json?origin='+origin+'&destination='+destination+'&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg'
+        url: 'https://maps.googleapis.com/maps/api/directions/json?origin=' + origin + '&destination=' + destination + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg'
     })
 }
 
-function calcRouteWrapper(origin){
+function calcRoute(currentLocation, endLocation) {
+    const {lat, lng} = currentLocation;
+    const {start, end} = endLocation;
 
-}
-  
-  function calcRoute(origin ) {
-    directionsFlag = true;
-    var lat = coordinates.lat;
-    var lng = coordinates.lng;
-    var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer();
-    var origin = new google.maps.LatLng(lat, lng);
-    var oceanBeach = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+    let directionsService = new google.maps.DirectionsService();
+    let directionsDisplay = new google.maps.DirectionsRenderer();
 
-    var map = new google.maps.Map(document.getElementById('map-area'), mapOptions);
-    directionsDisplay.setMap(map);
-    var selectedMode = document.getElementById('mode').value;
-    var request = {
-        origin: origin,
-        destination: oceanBeach,
-        // Note that Javascript allows us to access the constant
-        // using square brackets and a string value as its
-        // "property."
-        travelMode: google.maps.TravelMode[selectedMode]
+    let origin = new google.maps.LatLng(lat,lng);
+    let endPoint = new google.maps.LatLng(start, end);
+
+    let options = {
+        zoom: 9,
+        center: currentLocation,
+        disableDefaultUI: true
+    }
+
+    let map = new google.maps.Map(document.getElementById('map-area'), options);
+
+    let request = {
+        origin,
+        destination: endPoint,
+        travelMode: 'DRIVING'
     };
-    directionsService.route(request, function(response, status) {
-      if (status == 'OK') {
-        directionsDisplay.setDirections(response);
-      }
+    directionsDisplay.setMap(map);
+
+    directionsService.route(request, function (response, status) {
+        if (status == 'OK') {
+            directionsDisplay.setDirections(response);
+        }
     });
-  }
+}
 
-
+function reduceNameLength(name) {
+    if(name.includes('-')){
+        let positionToCut = name.indexOf('-');
+        let newStr = name.substr(0, positionToCut - 1);
+        return newStr;
+      }
+      return name;
+}
