@@ -1,17 +1,30 @@
 $(document).ready(initApp);
 function initApp() {
     $(".submit").click(userLocation);
+    $(".gym-tab").click(showGymInfo);
+    $(".directions-tab").click(showDirectionsInfo);
+    $(".back").click(backButton);
 }
 var flag = false;
+var flag2 = false;
+var textArr=[];
+var saveText
 /***********************GOOGLE API CALLS: START********************************/
 
 function userLocation() {
     resetLocationList();
-    if(flag){
+    if (flag) {
+        if(flag2){
+            saveText= textArr[0];
+            console.log("THIS IS THE TEXT AT FLAG 2:", saveText);
+        }
         listInfoAndDirectionsInfoToggle();
         flag = false;
     }
-    var text = $("input").val();
+    var text = $("input").val() ? $("input").val() : saveText;
+    console.log("THIS IS THE TEXT: ", text);
+    textArr.push(text);
+    console.log("text array: ", textArr);
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
@@ -78,8 +91,8 @@ function initMap(coordinates, climbingCoordinates) {
 }
 
 function calcRoute(currentLocation, endLocation) {
-    const {lat, lng} = currentLocation;
-    const {start, end} = endLocation;
+    const { lat, lng } = currentLocation;
+    const { start, end } = endLocation;
 
     console.log("THESE ARE THE COORDINATES FOR START AND END DESTINATION: ", currentLocation, endLocation);
 
@@ -88,7 +101,7 @@ function calcRoute(currentLocation, endLocation) {
     let directionsService = new google.maps.DirectionsService();
     let directionsDisplay = new google.maps.DirectionsRenderer();
 
-    let origin = new google.maps.LatLng(lat,lng);
+    let origin = new google.maps.LatLng(lat, lng);
     let endPoint = new google.maps.LatLng(start, end);
 
     let options = {
@@ -114,13 +127,13 @@ function calcRoute(currentLocation, endLocation) {
 }
 
 function directionsToClimbingLocation(origin, destination) {
-    const {lat, lng} = origin;
-    const{start, end} = destination;
+    const { lat, lng } = origin;
+    const { start, end } = destination;
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin='+lat+','+lng+'&destination='+start+ ','+end+'&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
-        success: function(response){
+        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        success: function (response) {
             console.log("THIS IS THE RESPONSE FOR DRIVING INSTRUCTIONS: ", response);
         }
     })
@@ -139,10 +152,10 @@ function displayClimbingMarkers(markers, map) {
 }
 function displayClimbingInfo(info, origin, flag) {
     for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
-        const {name, rating, vicinity, opening_hours, geometry} = info[locationInfo]
-        const {lat, lng} = geometry.location;
+        const { name, rating, vicinity, opening_hours, geometry } = info[locationInfo]
+        const { lat, lng } = geometry.location;
         var open = null;
-        if(opening_hours === undefined || opening_hours === null){
+        if (opening_hours === undefined || opening_hours === null) {
             span.text("N/A").css("color", "black");
         }
 
@@ -153,7 +166,7 @@ function displayClimbingInfo(info, origin, flag) {
         var div = $("<div>").addClass("list-info");
         var h4 = $("<h4>").text(nameDisplay);
         var span = $("<span>")
- 
+
         if (open) {
             span.text("Open Now").css("color", "green");
         }
@@ -188,12 +201,12 @@ function displayClimbingInfo(info, origin, flag) {
 }
 
 function reduceNameLength(name) {
-    if(name.includes('-')){
+    if (name.includes('-')) {
         let positionToCut = name.indexOf('-');
         let newStr = name.substr(0, positionToCut - 1);
         return newStr;
-      }
-      return name;
+    }
+    return name;
 }
 
 function resetLocationList() {
@@ -202,7 +215,22 @@ function resetLocationList() {
 // function resetMapContainer(){
 //     $("#map-area").empty();
 // }
-function listInfoAndDirectionsInfoToggle(){
+function listInfoAndDirectionsInfoToggle() {
     flag = true;
     $(".driving-directions, .climbing-list").toggleClass("hidden");
+}
+
+function showGymInfo() {
+    $(".info").removeClass("hidden");
+    $(".directions").addClass("hidden");
+}
+
+function showDirectionsInfo() {
+    $(".directions").removeClass("hidden");
+    $(".info").addClass("hidden");
+}
+
+function backButton(){
+    flag2=true;
+    userLocation()
 }

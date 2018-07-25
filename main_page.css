@@ -6,6 +6,7 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
 }
+/***********MAIN CONTENT************/
 .container{
     height: 100%;
     position: relative;
@@ -75,9 +76,6 @@ body{
     height: 97%;
     width:97%;
     overflow-y: scroll;
-
-
-
 }
 .list{
     margin:1%;
@@ -121,12 +119,46 @@ body{
     width: 71%;
     margin-bottom:0;
 }
-/* .list-info h5{
-    margin: 10px;
-} */
-.hidden{
-    visibility: hidden;
-}
+
+
+/******LOCATION INFORMATION START******/
+.location-content{
+    position: relative;
+    height: 100vh;
+    background-color: coral
+  }
+  .nav-list{
+    height:7%;
+    margin:none;
+    background-color:grey;
+  }
+  
+  .nav-list div{
+    background-color: white;
+    text-align: center;
+    width: 32.54%;
+    margin-top: 0%;
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 45px;
+  }
+  .nav-list div:nth-child(3){
+    border-right: none;
+  }
+  .nav-list div:hover{
+    background-color: rgba(0,0,0,.0);
+    color:white;
+  }
+  .inner-layer{
+    position: absolute;
+  }
+  .hidden{
+    visibility:hidden;
+  }
+
+/******LOCATION INFORMATION END******/
+
 @font-face{
     font-family: 'Mountain';
     src: url(fonts/Mountain.ttf);
