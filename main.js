@@ -1,30 +1,45 @@
 $(document).ready(initApp);
+
+/*********** INITIALIZING APP AND GLOBALS - START ***********/
+
 function initApp() {
-    $(".submit").click(userLocation);
+    $(".submit").click(function () {
+        textArr.shift();
+        userLocation();
+    });
     $(".gym-tab").click(showGymInfo);
     $(".directions-tab").click(showDirectionsInfo);
     $(".back").click(backButton);
 }
-var flag = false;
-var flag2 = false;
-var textArr=[];
-var saveText
-/***********************GOOGLE API CALLS: START********************************/
+var infoPanelToggle = false;
+var submitInfoToggle = false;
+var textArr = [];
+var saveText = null;
+
+/*********** INITIALIZING APP AND GLOBALS - END ***********/
+
+/***********************GOOGLE API CALLS - START********************************/
 
 function userLocation() {
+
     resetLocationList();
-    if (flag) {
-        if(flag2){
-            saveText= textArr[0];
-            console.log("THIS IS THE TEXT AT FLAG 2:", saveText);
-        }
-        listInfoAndDirectionsInfoToggle();
-        flag = false;
-    }
+
+    // if (infoPanelToggle) {
+    //     if (submitInfoToggle) {
+    //         saveText = textArr[0];
+    //     }
+    //     listInfoAndDirectionsInfoToggle();
+    //     infoPanelToggle = false;
+    // }
+
+    maintainLocation();
+
+
     var text = $("input").val() ? $("input").val() : saveText;
-    console.log("THIS IS THE TEXT: ", text);
     textArr.push(text);
-    console.log("text array: ", textArr);
+    $("input").val("");
+
+
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
@@ -35,12 +50,12 @@ function userLocation() {
                 lat: response.results[0].geometry.location.lat,
                 lng: response.results[0].geometry.location.lng
             }
-            climbingLocations(coordinates, flag);
+            climbingLocations(coordinates);
         }
     });
 }
 
-function climbingLocations(coordinates, flag) {
+function climbingLocations(coordinates) {
     var lat = coordinates.lat;
     var lng = coordinates.lng;
 
@@ -57,8 +72,7 @@ function climbingLocations(coordinates, flag) {
                 climbingLocations.push(response.results[i].geometry.location);
             }
             initMap(coordinates, climbingLocations);
-            displayClimbingInfo(climbingInfo, coordinates, flag);
-            // displayPhotos(photoInfo);
+            displayClimbingInfo(climbingInfo, coordinates);
 
         }
     })
@@ -71,7 +85,6 @@ function initMap(coordinates, climbingCoordinates) {
         disableDefaultUI: true,
     }
     var map = new google.maps.Map(document.getElementById('map-area'), options);
-    // directionsDisplay.setMap(map);
 
     //adds marker to users current position
     var userMarker = new google.maps.Marker({
@@ -138,8 +151,10 @@ function directionsToClimbingLocation(origin, destination) {
         }
     })
 }
-/***********************GOOGLE API CALLS: END********************************/
 
+/***********************GOOGLE API CALLS - END********************************/
+
+/*********** DISPLAYING MARKERS, INFO, AND EDITING INFO - START ***********/
 
 function displayClimbingMarkers(markers, map) {
     for (var k = 0; k < markers.length; k++) {
@@ -150,7 +165,7 @@ function displayClimbingMarkers(markers, map) {
     }
     return climbingMarkers;
 }
-function displayClimbingInfo(info, origin, flag) {
+function displayClimbingInfo(info, origin) {
     for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
         const { name, rating, vicinity, opening_hours, geometry } = info[locationInfo]
         const { lat, lng } = geometry.location;
@@ -183,7 +198,7 @@ function displayClimbingInfo(info, origin, flag) {
 
         $(divContainer).append(div);
         directionsBtn.on("click", directionsBtn, function () {
-            listInfoAndDirectionsInfoToggle(flag);
+            listInfoAndDirectionsInfoToggle();
             var element = this;
             let start = $(element).attr("data-endpointstart");
             let end = $(element).attr("data-endpointend");
@@ -209,14 +224,27 @@ function reduceNameLength(name) {
     return name;
 }
 
+/*********** DISPLAYING MARKERS, INFO, AND EDITING INFO - END ***********/
+
+
+/***********SAVING USER INPUT AND TOGGLING CLASSES - START***********/
+
+function maintainLocation(){
+    if (infoPanelToggle) {
+        if (submitInfoToggle) {
+            saveText = textArr[0];
+        }
+        listInfoAndDirectionsInfoToggle();
+        infoPanelToggle = false;
+    }
+}
+
 function resetLocationList() {
     $(".climbing-list").empty();
 }
-// function resetMapContainer(){
-//     $("#map-area").empty();
-// }
+
 function listInfoAndDirectionsInfoToggle() {
-    flag = true;
+    infoPanelToggle = true;
     $(".driving-directions, .climbing-list").toggleClass("hidden");
 }
 
@@ -230,7 +258,15 @@ function showDirectionsInfo() {
     $(".info").addClass("hidden");
 }
 
-function backButton(){
-    flag2=true;
+function backButton() {
+    submitInfoToggle = true;
     userLocation()
+    textArr.shift();
+
 }
+
+
+/***********SAVING USER INPUT AND TOGGLING CLASSES - END***********/
+
+
+
