@@ -2,10 +2,14 @@ $(document).ready(initApp);
 
 /*********** INITIALIZING APP AND GLOBALS - START ***********/
 
+// https://jsbin.com/wawezeguju/edit?html,css,output
+
 function initApp() {
+    // getLocation();
     $(".submit").click(function () {
+
         textArr.shift();
-        userLocation();
+        userInputLocation();
     });
     $(".gym-tab").click(showGymInfo);
     $(".directions-tab").click(showDirectionsInfo);
@@ -15,30 +19,50 @@ var infoPanelToggle = false;
 var submitInfoToggle = false;
 var textArr = [];
 var saveText = null;
+// var userCoords="";
+// var userCoords = null;
+
 
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
 /***********************GOOGLE API CALLS - START********************************/
 
-function userLocation() {
+// function userDefaultLocation(){
+//     $.ajax({
+//         type:'POST',
+//         dataType: 'JSON',
+//         url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+//         success: function(response){
+//             console.log("THIS IS THE RESPONSE IN GEOLOCATION: ", response.location);
+//             var userDefaultCoordinates = response.location;
+//             console.log("THIS IS COORDANTES: ", userDefaultCoordinates);
+//             grabUserLocation(userDefaultCoordinates);
+//         }
+//     })
+//     return;
+// }
+// function grabUserLocation(userLocation){
+//     console.log("THIS IS COORDINATES IN GRAB USER: ", userLocation);
+//     const {lat, lng} = userLocation;
+//     userCoords = lat + ', ' + lng;
+//     console.log("userCoords: ", userCoords);
+//     return;
+// }
+
+function userInputLocation() {
 
     resetLocationList();
-
-    // if (infoPanelToggle) {
-    //     if (submitInfoToggle) {
-    //         saveText = textArr[0];
-    //     }
-    //     listInfoAndDirectionsInfoToggle();
-    //     infoPanelToggle = false;
-    // }
-
     maintainLocation();
 
-
     var text = $("input").val() ? $("input").val() : saveText;
+    // console.log("IS TEXT NULL??: ", text);
+    // if(text === null){
+    //     userDefaultLocation();
+    //     text = userCoords;
+    //     console.log("THIS IS THE TEXT: ", text);
+    // }
     textArr.push(text);
     $("input").val("");
-
 
     $.ajax({
         type: 'GET',
@@ -171,7 +195,7 @@ function displayClimbingInfo(info, origin) {
         const { lat, lng } = geometry.location;
         var open = null;
         if (opening_hours === undefined || opening_hours === null) {
-            span.text("N/A").css("color", "black");
+            span.text("N/A").css("color", "orange");
         }
 
         var nameDisplay = reduceNameLength(name);
@@ -250,17 +274,21 @@ function listInfoAndDirectionsInfoToggle() {
 
 function showGymInfo() {
     $(".info").removeClass("hidden");
+    $(".gym-tab").addClass("tabClicked");
     $(".directions").addClass("hidden");
+    $(".directions-tab").removeClass("tabClicked");
 }
 
 function showDirectionsInfo() {
     $(".directions").removeClass("hidden");
+    $(".directions-tab").addClass("tabClicked");
     $(".info").addClass("hidden");
+    $(".gym-tab").removeClass("tabClicked");
 }
 
 function backButton() {
     submitInfoToggle = true;
-    userLocation()
+    userInputLocation()
     textArr.shift();
 
 }
