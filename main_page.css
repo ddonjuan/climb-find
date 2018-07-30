@@ -80,7 +80,6 @@ body{
     margin: 1%;
     height: 97%;
     width:97%;
-    overflow-y: scroll;
 }
 .list{
     margin:1%;
@@ -131,6 +130,52 @@ body{
     margin-bottom:0;
 }
 
+/* .display-directions{
+    height: 100;
+    width: 100vw;
+    overflow: scroll;
+    background-color: rgba(255,255,255,.2);
+    position:relative;
+  } */
+  .directions{
+      height:100%;
+      width:100%;
+      font-family: sans-serif;
+
+  }
+  .list-container{
+      overflow: scroll;
+      height:55%;
+  }
+  .start-location, .end-location{
+    position: relative;
+    padding-top:1%;
+    width:100%;
+    height: 7%;
+    text-align:center;
+    /* border-bottom: 1px solid rgba(0,0,0,.7); */
+    background-color: rgba(255,255,255,.5);
+    /* box-shadow: 0 0 5px 0,
+      0 0 5px 0; */
+  }
+  .end-location{
+    height:10%;
+  }
+  
+  .a{
+    margin-top:2%;
+    position: relative;
+    text-align:left;
+    color: white;
+  }
+  .directions-list{
+    border: 1px solid black;
+    font-family:sans-serif;
+    font-weight: none;
+      box-shadow: 0 0 5px 0,
+      0 0 5px 0;
+    color:white;
+  }
 
 /******LOCATION INFORMATION START******/
 .location-content{
@@ -148,7 +193,7 @@ body{
     background-color: rgba(255,255,255, 0.2);
     color:white;
     text-align: center;
-    width: 32.54%;
+    width: 32.5%;
     margin-top: 0%;
     display: inline-block;
     height: 100%;
