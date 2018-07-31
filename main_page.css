@@ -61,7 +61,7 @@ body{
     border-radius: 2%;
     /* background-color: rgba(255,255,255, 0.3); */
     left: 7%;
-    top:2%;
+    top:3%;
 }
 .inner{
     position:absolute;
@@ -78,7 +78,7 @@ body{
 .driving-directions{
     border-radius: 1%;
     margin: 1%;
-    height: 97%;
+    height: 96%;
     width:97%;
 }
 .list{
@@ -145,7 +145,7 @@ body{
   }
   .list-container{
       overflow: scroll;
-      height:55%;
+      height:60%;
   }
   .start-location, .end-location{
     position: relative;
@@ -159,7 +159,9 @@ body{
       0 0 5px 0; */
   }
   .end-location{
-    height:10%;
+    height: 7.92%;
+    top: 16.8%;
+    margin: 0;
   }
   
   .a{
@@ -180,7 +182,7 @@ body{
 /******LOCATION INFORMATION START******/
 .location-content{
     position: relative;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(0,0,0,.8);
   }
   .nav-list{
