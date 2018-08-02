@@ -6,17 +6,13 @@ $(document).ready(initApp);
 
 function initApp() {
     // getLocation();
+    locationsNearUser();
+    locationDetails();
     userDefaultLocation();
 
     $(".submit").click(function () {
         $(".directions").empty();
         textArr.shift();
-        // if(textArr.length === 0){
-        //     console.log("TRRRRUUUUUUEU*#$&*#&$*#&$*#");
-        //     console.log("THIS IS THE TEXT ARR IN SUBMIT: ", textArr);
-        //     console.log("TRUUUUUUUUU!!!!!");
-        //     userDefaultLocation();
-        // }
         userInputLocation();
     });
     $(".gym-tab").click(showGymInfo);
@@ -27,28 +23,44 @@ var infoPanelToggle = false;
 var submitInfoToggle = false;
 var textArr = [];
 var saveText = null;
-// var coordsUse="";
-// console.log("THESE ARE THE COORDSUSER: ", coordsUse);
-// var userCoords = "";
+
 
 
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
 /***********************GOOGLE API CALLS - START********************************/
-// function yelpCall(userLocation) {
-//     var radius = 30000;
-//     $.ajax({
-//         type: 'GET',
-//         dataType: 'JSON',
-//         url: 'https://cors.io/?https://api.yelp.com/v3/businesses/search?term="rock-climbing&radius='+radius+'&location='+userLocation,
-//         term: "rock climbing",
-//         // location: userLocation,
-//         success: function (response) {
-//             console.log("THIS IS YELP RESPONSE: ", response);
-//         }
+function locationsNearUser(userLocation) {
+    var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&location=92703";
 
-//     });
-// }
+    $.ajax({
+       url: myurl,
+       headers: {
+        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+    },
+       method: 'GET',
+       dataType: 'JSON',
+       success: function(data){
+           console.log('success: ',data);
+       }
+    });  
+}
+function locationDetails(){
+     
+    var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/{5tkpswspV1_ibBDpNAqXtw}";
+
+    $.ajax({
+       url: myurl,
+       headers: {
+        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+    },
+       method: 'GET',
+       dataType: 'JSON',
+       success: function(data){
+           console.log('success buisness details: ',data);
+       }
+    }); 
+
+}
 function userDefaultLocation() {
     var currentLocation;
     $.ajax({
@@ -66,17 +78,6 @@ function userDefaultLocation() {
         }
     })
 }
-// function grabUserLocation(userLocation){
-//     console.log("grabUserLocation FIRED!!");
-
-//     console.log("THIS IS COORDINATES IN GRAB USER: ", userLocation);
-//     const {lat, lng} = userLocation;
-//     console.log("THIS IS LAT AND LNG: ", lat, lng);
-//     userCoords = lat + ', ' + lng;
-//     console.log("userCoords: ", userCoords);
-//     coordsUse = userCoords;
-//     return;
-// }
 
 function userInputLocation() {
 
@@ -84,8 +85,7 @@ function userInputLocation() {
     maintainLocation();
 
     var text = $("input").val() ? $("input").val() : saveText;
-    // yelpCall(text);
-    // console.log("IS TEXT NULL??: ", text);
+
     textArr.push(text);
     $("input").val("");
 
