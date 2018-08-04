@@ -6,8 +6,8 @@ $(document).ready(initApp);
 
 function initApp() {
     // getLocation();
-    locationsNearUser();
-    locationDetails();
+    // locationsNearUser();
+    // locationDetails();
     userDefaultLocation();
 
     $(".submit").click(function () {
@@ -66,7 +66,7 @@ function userDefaultLocation() {
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             let userCoords;
             console.log("THIS IS THE RESPONSE IN GEOLOCATION: ", response.location);
@@ -92,7 +92,7 @@ function userInputLocation() {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             console.log(response);
             var coordinates = {
@@ -111,7 +111,7 @@ function climbingLocations(coordinates) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=30000&keyword=rockclimbing&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=30000&keyword=rockclimbing&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             var climbingLocations = [];
             var climbingInfo = response.results;
@@ -198,7 +198,7 @@ function directionsToClimbingLocation(origin, destination) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             console.log("THIS IS THE RESPONSE FOR DRIVING INSTRUCTIONS: ", response);
             let directions = response.routes[0].legs[0];
