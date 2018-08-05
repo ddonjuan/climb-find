@@ -6,8 +6,8 @@ $(document).ready(initApp);
 
 function initApp() {
     // getLocation();
-    locationsNearUser();
-    locationDetails();
+    // locationsNearUser();
+    // locationDetails();
     userDefaultLocation();
 
     $(".submit").click(function () {
@@ -66,7 +66,7 @@ function userDefaultLocation() {
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             let userCoords;
             console.log("THIS IS THE RESPONSE IN GEOLOCATION: ", response.location);
@@ -92,9 +92,9 @@ function userInputLocation() {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
-            console.log(response);
+            console.log("This should be my coordinates",response);
             var coordinates = {
                 lat: response.results[0].geometry.location.lat,
                 lng: response.results[0].geometry.location.lng
@@ -108,30 +108,56 @@ function climbingLocations(coordinates) {
     var lat = coordinates.lat;
     var lng = coordinates.lng;
 
+    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&latitude='+lat+'&longitude='+lng;
+
     $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=30000&keyword=rockclimbing&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
-        success: function (response) {
-            var climbingLocations = [];
-            var climbingInfo = response.results;
-            console.log("response: ", response);
+       url: myurl,
+       headers: {
+        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+    },
+       method: 'GET',
+       dataType: 'JSON',
+       success: function(response){
+            var climbingLocations = []; 
+            var climbingLocationNameChange={};
+            var locationCoordinates= response.businesses;
+           console.log('success for YELP CALL: ',response);
+           for(var locationDetails = 0; locationDetails < locationCoordinates.length; locationDetails++){
+               climbingLocations.push({'lat':locationCoordinates[locationDetails].coordinates.latitude, 'lng':locationCoordinates[locationDetails].coordinates.longitude});
+           }
+           console.log(climbingLocations, ": THESE ARE THE COORDINATES");
+           initMap(coordinates, climbingLocations);
+        //    displayClimbingList(climbingInfo, coordinates);
 
-            console.log("This is the reponse array: ", response.results);
-            for (var i = 0; i < response.results.length; i++) {
-                climbingLocations.push(response.results[i].geometry.location);
-            }
-            initMap(coordinates, climbingLocations);
-            displayClimbingList(climbingInfo, coordinates);
-            dipslayLocationInfoTab(climbingInfo);
 
-        }
-    })
+       }
+    });  
+
+    // $.ajax({
+    //     type: 'GET',
+    //     dataType: 'json',
+    //     url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=10000&keyword=rockclimbing&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
+    //     success: function (response) {
+    //         var climbingLocations = [];
+    //         var climbingInfo = response.results;
+    //         console.log("response: ", response);
+
+    //         console.log("This is the reponse array: ", response.results);
+    //         for (var i = 0; i < response.results.length; i++) {
+    //             climbingLocations.push(response.results[i].geometry.location);
+    //         }
+    //         console.log("THESE ARE GOOGLE CLIMBING LOCATIONS: ", climbingLocations);
+    //         initMap(coordinates, climbingLocations);
+    //         displayClimbingList(climbingInfo, coordinates);
+    //         dipslayLocationInfoTab(climbingInfo);
+
+    //     }
+    // })
 }
 
-function initMap(coordinates, climbingCoordinates) {
+function initMap(coordinates, climbingLocations) {
     var options = {
-        zoom: 10.2,
+        zoom: 11,
         center: coordinates,
         disableDefaultUI: true,
         styles: mapStyle
@@ -152,7 +178,7 @@ function initMap(coordinates, climbingCoordinates) {
             }
         }
     }
-    displayClimbingMarkers(climbingCoordinates, map);
+    displayClimbingMarkers(climbingLocations, map);
 }
 
 function calcRoute(currentLocation, endLocation) {
@@ -198,7 +224,7 @@ function directionsToClimbingLocation(origin, destination) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAppn1zQQF3qpm3fLCF0kIwUCrLCV54XPg',
+        url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
             console.log("THIS IS THE RESPONSE FOR DRIVING INSTRUCTIONS: ", response);
             let directions = response.routes[0].legs[0];
