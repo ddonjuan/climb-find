@@ -33,32 +33,32 @@ function locationsNearUser(userLocation) {
     var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&location=92703";
 
     $.ajax({
-       url: myurl,
-       headers: {
-        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-    },
-       method: 'GET',
-       dataType: 'JSON',
-       success: function(data){
-           console.log('success: ',data);
-       }
-    });  
+        url: myurl,
+        headers: {
+            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+        },
+        method: 'GET',
+        dataType: 'JSON',
+        success: function (data) {
+            console.log('success: ', data);
+        }
+    });
 }
-function locationDetails(){
-     
+function locationDetails() {
+
     var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/{5tkpswspV1_ibBDpNAqXtw}";
 
     $.ajax({
-       url: myurl,
-       headers: {
-        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-    },
-       method: 'GET',
-       dataType: 'JSON',
-       success: function(data){
-           console.log('success buisness details: ',data);
-       }
-    }); 
+        url: myurl,
+        headers: {
+            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+        },
+        method: 'GET',
+        dataType: 'JSON',
+        success: function (data) {
+            console.log('success buisness details: ', data);
+        }
+    });
 
 }
 function userDefaultLocation() {
@@ -94,7 +94,7 @@ function userInputLocation() {
         dataType: 'JSON',
         url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
-            console.log("This should be my coordinates",response);
+            console.log("This should be my coordinates", response);
             var coordinates = {
                 lat: response.results[0].geometry.location.lat,
                 lng: response.results[0].geometry.location.lng
@@ -104,34 +104,33 @@ function userInputLocation() {
     });
 }
 
-function climbingLocations(coordinates) {
-    var lat = coordinates.lat;
-    var lng = coordinates.lng;
+function climbingLocations(userCoordinates) {
+    var lat = userCoordinates.lat;
+    var lng = userCoordinates.lng;
 
-    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&latitude='+lat+'&longitude='+lng;
+    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&latitude=' + lat + '&longitude=' + lng;
 
     $.ajax({
-       url: myurl,
-       headers: {
-        'Authorization':'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-    },
-       method: 'GET',
-       dataType: 'JSON',
-       success: function(response){
-            var climbingLocations = []; 
-            var climbingLocationNameChange={};
-            var locationCoordinates= response.businesses;
-           console.log('success for YELP CALL: ',response);
-           for(var locationDetails = 0; locationDetails < locationCoordinates.length; locationDetails++){
-               climbingLocations.push({'lat':locationCoordinates[locationDetails].coordinates.latitude, 'lng':locationCoordinates[locationDetails].coordinates.longitude});
-           }
-           console.log(climbingLocations, ": THESE ARE THE COORDINATES");
-           initMap(coordinates, climbingLocations);
-        //    displayClimbingList(climbingInfo, coordinates);
+        url: myurl,
+        headers: {
+            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+        },
+        method: 'GET',
+        dataType: 'JSON',
+        success: function (response) {
+            var climbingLocations = [];
+            var locationInfo = response.businesses;
+            console.log('success for YELP CALL: ', response);
+            for (var locationDetails = 0; locationDetails < locationInfo.length; locationDetails++) {
+                climbingLocations.push({ 'lat': locationInfo[locationDetails].coordinates.latitude, 'lng': locationInfo[locationDetails].coordinates.longitude });
+            }
+            //    console.log(climbingLocations, ": THESE ARE THE COORDINATES");
+            initMap(userCoordinates, climbingLocations);
+            displayClimbingList(locationInfo, userCoordinates);
 
 
-       }
-    });  
+        }
+    });
 
     // $.ajax({
     //     type: 'GET',
@@ -157,7 +156,7 @@ function climbingLocations(coordinates) {
 
 function initMap(coordinates, climbingLocations) {
     var options = {
-        zoom: 11,
+        zoom: 11.6,
         center: coordinates,
         disableDefaultUI: true,
         styles: mapStyle
@@ -238,7 +237,7 @@ function directionsToClimbingLocation(origin, destination) {
 /*********** DISPLAYING MARKERS, INFO, AND EDITING INFO - START ***********/
 
 function displayClimbingMarkers(markers, map) {
-    var image={
+    var image = {
         url: 'images/mission.png',
         size: new google.maps.Size(32, 32),
         origin: new google.maps.Point(0, 0),
@@ -255,22 +254,24 @@ function displayClimbingMarkers(markers, map) {
     return climbingMarkers;
 }
 function displayClimbingList(info, origin) {
-    console.log("THIS IS INFO: 82734834", info)
+    console.log("THIS IS INFO: FROM YELP: ", info)
     for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
-        const { name, rating, vicinity, opening_hours, geometry } = info[locationInfo]
-        const { lat, lng } = geometry.location;
+        const { name, rating, location, is_closed, coordinates, id, image_url } = info[locationInfo]
+        const { latitude, longitude } = coordinates;
         var open = null;
-        if (opening_hours === undefined || opening_hours === null) {
+        if (is_closed === undefined || is_closed === null) {
             span.text("N/A").css("color", "orange");
         }
 
         var nameDisplay = reduceNameLength(name);
-        open = opening_hours ? opening_hours.open_now : "N/A";
+        open = is_closed ? is_closed.open_now : "N/A";
         var ratingDisplay = rating;
         var divContainer = $("<div>").addClass("list");
         var div = $("<div>").addClass("list-info");
-        var h4 = $("<h4>").text(nameDisplay);
-        var span = $("<span>")
+        var h4 = $("<h4>").text(nameDisplay).addClass("location-name");
+        var span = $("<div>").addClass("is-closed");
+        var pic = image_url ? image_url : 'images/image_not_found.png'
+        var image = $("<img>").attr("src", pic).addClass("location-image");
 
         if (open) {
             span.text("Open Now").css("color", "green");
@@ -278,13 +279,14 @@ function displayClimbingList(info, origin) {
         else {
             span.text("Closed").css("color", "red");
         }
-        var h5 = $("<h5>").text(vicinity);
+
+        var h5Address = $("<h5>").text(`${location.address1} ${location.city}, ${location.state}, ${location.zip_code}`);
         var directionsBtn = $("<button>", {
             'class': 'get-directions',
             text: 'Let\'s go climb!'
-        }).attr("data-endpointStart", lat).attr("data-endpointEnd", lng);
+        }).attr("data-endpointStart", latitude).attr("data-endpointEnd", longitude).attr("data-id", id);
 
-        div.append(h4, span, h5, directionsBtn);
+        div.append(image, h4, h5Address, directionsBtn, span);
 
         $(divContainer).append(div);
         directionsBtn.on("click", directionsBtn, function () {
@@ -292,6 +294,7 @@ function displayClimbingList(info, origin) {
             var element = this;
             let start = $(element).attr("data-endpointstart");
             let end = $(element).attr("data-endpointend");
+            let id = $(element).attr("data-id");
             var endLocation = {
                 start,
                 end
@@ -311,13 +314,18 @@ function reduceNameLength(name) {
         let newStr = name.substr(0, positionToCut - 1);
         return newStr;
     }
+    if (name.length > 36) {
+        let positionToCut = name.substr(0, 33);
+        positionToCut += "...";
+        return positionToCut;
+    }
     return name;
 }
 function displayDirectionsInfo(directions) {
     var startAddress = $("<div>").addClass("start-location");
     var startAddressText = $("<h4>").addClass("a").text("Start: " + directions.start_address);
     startAddress.append(startAddressText);
-    
+
     var listContainer = $("<div>").addClass("list-container");
     $(".directions").append(startAddress);
 
@@ -326,14 +334,14 @@ function displayDirectionsInfo(directions) {
         listContainer.append(stepsList);
     }
     $(".directions").append(listContainer);
-    
+
     var endAddress = $("<div>").addClass("end-location");
     var endAddressText = $("<h4>").addClass("a").text(directions.end_address);
     endAddress.append(endAddressText);
     $(".directions").append(endAddress);
 
 }
-function dipslayLocationInfoTab(locationInfo){
+function dipslayLocationInfoTab(locationInfo) {
     console.log(locationInfo, "THIS IS THE CLIMBING INFO!!");
 }
 
