@@ -96,7 +96,7 @@ body{
     border:1px solid black;
     height:25%;
     /* background-color: rgba(33,15,37,.8); */
-    background-color: rgba(0,0,0,.9);
+    background-color: rgba(0,0,0,.7);
     box-shadow: 0 5px 5px 0 rgba(0,0,0,.4),
     5px 5px 5px 0 rgba(0,0,0,.4);
     color: white;
@@ -148,7 +148,33 @@ body{
     background-color: rgba(255,255,255,.2);
     position:relative;
   } */
-  .directions{
+.info{
+    font-family: "KeepCalm-Medium";
+    overflow: scroll;
+    color:white;
+}
+.info h2,.is-closed,.hours,.address,.rating,.phone{
+    display: flex;
+    justify-content: center;
+    margin:1%;
+}
+.rating{
+    margin-left:auto;
+    margin-right:auto;
+}
+.location-details{
+    overflow: scroll;
+    height:28%;
+    background-color: rgba(0,0,0,.7);
+
+}
+.location-pic{
+    display: flex;
+    width: 90%;
+    height: 45%;
+    margin: auto;
+}
+  .directions, .info{
       height:100%;
       width:100%;
       font-family: sans-serif;
@@ -202,7 +228,7 @@ body{
 .location-content{
     position: relative;
     height: 100%;
-    background-color: rgba(0,0,0,.9);
+    background-color: rgba(0,0,0,.7);
   }
   .nav-list{
     height:8%;

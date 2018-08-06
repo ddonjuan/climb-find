@@ -29,38 +29,22 @@ var saveText = null;
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
 /***********************GOOGLE API CALLS - START********************************/
-function locationsNearUser(userLocation) {
-    var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&location=92703";
+// function locationsNearUser(userLocation) {
+//     var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&location=92703";
 
-    $.ajax({
-        url: myurl,
-        headers: {
-            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-        },
-        method: 'GET',
-        dataType: 'JSON',
-        success: function (data) {
-            console.log('success: ', data);
-        }
-    });
-}
-function locationDetails() {
+//     $.ajax({
+//         url: myurl,
+//         headers: {
+//             'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+//         },
+//         method: 'GET',
+//         dataType: 'JSON',
+//         success: function (data) {
+//             console.log('success: ', data);
+//         }
+//     });
+// }
 
-    var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/{5tkpswspV1_ibBDpNAqXtw}";
-
-    $.ajax({
-        url: myurl,
-        headers: {
-            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-        },
-        method: 'GET',
-        dataType: 'JSON',
-        success: function (data) {
-            console.log('success buisness details: ', data);
-        }
-    });
-
-}
 function userDefaultLocation() {
     var currentLocation;
     $.ajax({
@@ -178,6 +162,21 @@ function initMap(coordinates, climbingLocations) {
         }
     }
     displayClimbingMarkers(climbingLocations, map);
+}
+function climbingLocationDetails(id) {
+    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/'+id;
+    $.ajax({
+        url: myurl,
+        headers: {
+            'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
+        },
+        method: 'GET',
+        dataType: 'JSON',
+        success: function (response) {
+            displayInfoTab(response);
+        }
+    });
+
 }
 
 function calcRoute(currentLocation, endLocation) {
@@ -299,8 +298,8 @@ function displayClimbingList(info, origin) {
                 start,
                 end
             };
-            console.log("endLocation in dom creation: ", endLocation);
             calcRoute(origin, endLocation);
+            climbingLocationDetails(id, open);
 
         })
         $(".climbing-list").append(divContainer);
@@ -321,6 +320,25 @@ function reduceNameLength(name) {
     }
     return name;
 }
+
+function displayInfoTab(info, open){
+    let nameH2 = $("<h2>").text(info.name);
+    let image = $("<img>").attr("src", info.photos[1]).addClass("location-pic");
+    let locationDetails = $("<div>").addClass("location-details");
+    let isOpen = $("<div>").addClass("is-closed").text(open);
+    let todaysNumber = getTodaysDate();
+    let getMilitaryHours = info.hours[0].open[todaysNumber];
+    let businessHours = hoursOfOperation(getMilitaryHours.start, getMilitaryHours.end);
+    let hours = $("<div>").addClass("hours").text("Hours of Operation: " + businessHours);
+    let address = $("<div>").addClass("address").text(info.location.display_address);
+    console.log("Rating: ", info.rating);
+    let ratingImg = displayYelpStarReviews(info.rating);
+    let rating  = $("<img>").addClass("rating").attr("src", ratingImg);
+    let phone = $("<div>").addClass("phone").text(info.display_phone);
+    locationDetails.append(hours, address, rating, phone);
+    $(".info").append(nameH2, image, locationDetails);
+}
+
 function displayDirectionsInfo(directions) {
     var startAddress = $("<div>").addClass("start-location");
     var startAddressText = $("<h4>").addClass("a").text("Start: " + directions.start_address);
@@ -360,6 +378,36 @@ function maintainLocation() {
     }
 }
 
+function hoursOfOperation(num1, num2){
+    var hoursArr = [num1, num2];
+    var identifier;
+    var standardTime = [];
+    for(var hoursNum = 0; hoursNum < hoursArr.length; hoursNum++){
+      var militaryTime = hoursArr[hoursNum];
+      if(militaryTime < 1200){
+        identifier = "AM";
+        militaryTime = 1200 - militaryTime;
+        let start = convertNumToStandardTime(militaryTime) + identifier;
+        standardTime.push(start);
+      }
+      if( militaryTime >= 1200){
+        identifier = "PM";
+        militaryTime -= 1200;
+        let end = convertNumToStandardTime(militaryTime) + identifier;
+        standardTime.push(end); 
+      }
+    }
+    return standardTime[0] + " - " + standardTime[1];
+  }
+
+  function convertNumToStandardTime(militaryTime){
+    militaryTime+="";
+    let numArr = militaryTime.split("");
+    numArr.splice(militaryTime.length-2, militaryTime.length);
+    let newNum = numArr.join("");
+    return newNum;
+  }
+
 function resetLocationList() {
     $(".climbing-list").empty();
 }
@@ -386,10 +434,42 @@ function showDirectionsInfo() {
 function backButton() {
     submitInfoToggle = true;
     $(".directions").empty();
+    $(".info").empty();
     userInputLocation()
     textArr.shift();
 }
 
+function getTodaysDate(){
+    let date = new Date();
+    let today = date.getDay();
+    return today;
+}
+
+function displayYelpStarReviews(rating){
+    switch(rating){
+        case 1:
+            return 'images/yelp-review-images/regular_1.png';
+        case 1.5:
+            return 'images/yelp-review-images/regular_1_half.png';  
+        case 2:
+            return 'images/yelp-review-images/regular_2.png'; 
+        case 2.5:
+            return 'images/yelp-review-images/regular_2_half.png';    
+        case 3:
+            return 'images/yelp-review-images/regular_3.png';    
+        case 3.5:
+            return 'images/yelp-review-images/regular_3_half.png'; 
+        case 4:
+            return 'images/yelp-review-images/regular_4.png';                                            
+        case 4.5:
+            return 'images/yelp-review-images/regular_4_half.png';            
+        case 5:
+            return 'images/yelp-review-images/regular_5.png';            
+         default:
+            return 'images/yelp-review-images/regular_0.png';
+
+    }
+}
 
 /***********SAVING USER INPUT AND TOGGLING CLASSES - END***********/
 
