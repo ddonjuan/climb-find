@@ -5,9 +5,7 @@ $(document).ready(initApp);
 // https://jsbin.com/wawezeguju/edit?html,css,output
 
 function initApp() {
-    // getLocation();
-    // locationsNearUser();
-    // locationDetails();
+
     userDefaultLocation();
 
     $(".submit").click(function () {
@@ -28,22 +26,7 @@ var saveText = null;
 
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
-/***********************GOOGLE API CALLS - START********************************/
-// function locationsNearUser(userLocation) {
-//     var myurl = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=rock-climbing&location=92703";
-
-//     $.ajax({
-//         url: myurl,
-//         headers: {
-//             'Authorization': 'Bearer rOD-HU7NPXZ34JE9VQwdbOcgD2CcU59b5c9UhFuL4N0eoK97PxhvON13DWbaw6a9H2UwQqPJ4V3R53lKXYyGhR7yEsyfG0uVG6Mhb_6IeeXQ_quaAAEefOh32G1SW3Yx'
-//         },
-//         method: 'GET',
-//         dataType: 'JSON',
-//         success: function (data) {
-//             console.log('success: ', data);
-//         }
-//     });
-// }
+/***********************API CALLS - START********************************/
 
 function userDefaultLocation() {
     var currentLocation;
@@ -108,39 +91,17 @@ function climbingLocations(userCoordinates) {
             for (var locationDetails = 0; locationDetails < locationInfo.length; locationDetails++) {
                 climbingLocations.push({ 'lat': locationInfo[locationDetails].coordinates.latitude, 'lng': locationInfo[locationDetails].coordinates.longitude });
             }
-            //    console.log(climbingLocations, ": THESE ARE THE COORDINATES");
             initMap(userCoordinates, climbingLocations);
             displayClimbingList(locationInfo, userCoordinates);
 
 
         }
     });
-
-    // $.ajax({
-    //     type: 'GET',
-    //     dataType: 'json',
-    //     url: 'https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + lat + ',' + lng + '&radius=10000&keyword=rockclimbing&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
-    //     success: function (response) {
-    //         var climbingLocations = [];
-    //         var climbingInfo = response.results;
-    //         console.log("response: ", response);
-
-    //         console.log("This is the reponse array: ", response.results);
-    //         for (var i = 0; i < response.results.length; i++) {
-    //             climbingLocations.push(response.results[i].geometry.location);
-    //         }
-    //         console.log("THESE ARE GOOGLE CLIMBING LOCATIONS: ", climbingLocations);
-    //         initMap(coordinates, climbingLocations);
-    //         displayClimbingList(climbingInfo, coordinates);
-    //         dipslayLocationInfoTab(climbingInfo);
-
-    //     }
-    // })
 }
 
 function initMap(coordinates, climbingLocations) {
     var options = {
-        zoom: 11.6,
+        zoom: 10.7,
         center: coordinates,
         disableDefaultUI: true,
         styles: mapStyle
@@ -322,19 +283,25 @@ function reduceNameLength(name) {
 }
 
 function displayInfoTab(info, open){
+    console.log("info to lloKELEK: ", info);
     let nameH2 = $("<h2>").text(info.name);
     let image = $("<img>").attr("src", info.photos[1]).addClass("location-pic");
     let locationDetails = $("<div>").addClass("location-details");
     let isOpen = $("<div>").addClass("is-closed").text(open);
+
     let todaysNumber = getTodaysDate();
+    
     let getMilitaryHours = info.hours[0].open[todaysNumber];
-    let businessHours = hoursOfOperation(getMilitaryHours.start, getMilitaryHours.end);
+    let businessHours = getMilitaryHours ? hoursOfOperation(getMilitaryHours.start, getMilitaryHours.end);
     let hours = $("<div>").addClass("hours").text("Hours of Operation: " + businessHours);
+
     let address = $("<div>").addClass("address").text(info.location.display_address);
-    console.log("Rating: ", info.rating);
+
     let ratingImg = displayYelpStarReviews(info.rating);
     let rating  = $("<img>").addClass("rating").attr("src", ratingImg);
+
     let phone = $("<div>").addClass("phone").text(info.display_phone);
+
     locationDetails.append(hours, address, rating, phone);
     $(".info").append(nameH2, image, locationDetails);
 }
@@ -383,19 +350,22 @@ function hoursOfOperation(num1, num2){
     var identifier;
     var standardTime = [];
     for(var hoursNum = 0; hoursNum < hoursArr.length; hoursNum++){
-      var militaryTime = hoursArr[hoursNum];
-      if(militaryTime < 1200){
-        identifier = "AM";
-        militaryTime = 1200 - militaryTime;
-        let start = convertNumToStandardTime(militaryTime) + identifier;
-        standardTime.push(start);
-      }
-      if( militaryTime >= 1200){
-        identifier = "PM";
-        militaryTime -= 1200;
-        let end = convertNumToStandardTime(militaryTime) + identifier;
-        standardTime.push(end); 
-      }
+        if(hoursArr[hoursNum] === "0000"){
+            identifier = "AM";
+            let midnight = "12AM";
+            standardTime.push(midnight);
+        }
+    let parseMe = hoursArr[hoursNum];
+    var militaryTime = parseInt(parseMe);
+    if( militaryTime >= 1300){
+      identifier = "PM";
+      militaryTime -= 1200;
+      let end = convertNumToStandardTime(militaryTime) + identifier;
+      standardTime.push(end); 
+    }
+      identifier = "AM";
+      let start = convertNumToStandardTime(militaryTime) + identifier;
+      standardTime.push(start);
     }
     return standardTime[0] + " - " + standardTime[1];
   }
