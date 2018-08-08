@@ -5,29 +5,58 @@ $(document).ready(initApp);
 // https://jsbin.com/wawezeguju/edit?html,css,output
 
 function initApp() {
-
     userDefaultLocation();
-
+    $(".submit-index").click(landingPage);
     $(".submit").click(function () {
+        console.log("text Array at submit: ", textArr, saveText);
+        if(landingPageUserLocation){
+            console.log("LANDIN PAGE USER LOCATION FIRED");
+            textArr.shift();
+            userDefaultLocation();
+            landingPageUserLocation = false;
+        }
         $(".directions").empty();
+        $(".info").empty();
         textArr.shift();
         userInputLocation();
     });
     $(".gym-tab").click(showGymInfo);
     $(".directions-tab").click(showDirectionsInfo);
     $(".back").click(backButton);
+    $(".close-btn, .confirm-btn").click(function(){
+        $(".modal-container").addClass("hidden");
+        $(".main-input").attr("placeholder", "Current Location");
+        saveText = null;
+        $("#map-area").empty();
+        userDefaultLocation();
+    })
 }
 var infoPanelToggle = false;
 var submitInfoToggle = false;
 var textArr = [];
 var saveText = null;
+var landingPageUserLocation = false;
 
 
 
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
 /***********************API CALLS - START********************************/
+function landingPage() {
+    $(".cover-page-container").addClass("hidden");
+    $(".main-container").removeClass("hidden");
+    var landingPageText = $(".landing-page-text").val();
+    console.log("LANDIN PAGE TEXT BEOFRE ANYTHING: ", landingPageText)
+    console.log("THIS IS THE LANDING PAGE TEXT: ", landingPageText);
+    if(landingPageText.length === 0){
+        userInputLocation();
+        return;
+    }
+    saveText=landingPageText;
+    landingPageUserLocation = true;
+    userInputLocation();
 
+}
 function userDefaultLocation() {
     var currentLocation;
     $.ajax({
@@ -35,40 +64,43 @@ function userDefaultLocation() {
         dataType: 'JSON',
         url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
+
             let userCoords;
-            console.log("THIS IS THE RESPONSE IN GEOLOCATION: ", response.location);
             userCoords = response.location;
-            console.log("THIS IS THE USER LOCATION: ", userCoords);
             currentLocation = userCoords.lat + ',' + userCoords.lng;
             saveText = currentLocation;
-
         }
     })
 }
 
 function userInputLocation() {
-
     resetLocationList();
     maintainLocation();
 
-    var text = $("input").val() ? $("input").val() : saveText;
-
+    var text = $(".main-input").val() ? $(".main-input").val() : saveText;
     textArr.push(text);
     $("input").val("");
+    textPlaceholder();
+    $(".loader-container").removeClass("hidden");
 
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
         url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
-            console.log("This should be my coordinates", response);
+            console.log("THIS IS THE RESPONSE ON LOCATION COORDINATES: ", response);
+            if(response.status === 'ZERO_RESULTS'){
+            }
             var coordinates = {
                 lat: response.results[0].geometry.location.lat,
                 lng: response.results[0].geometry.location.lng
             }
+
             climbingLocations(coordinates);
         }
     });
+
+
 }
 
 function climbingLocations(userCoordinates) {
@@ -87,21 +119,26 @@ function climbingLocations(userCoordinates) {
         success: function (response) {
             var climbingLocations = [];
             var locationInfo = response.businesses;
-            console.log('success for YELP CALL: ', response);
             for (var locationDetails = 0; locationDetails < locationInfo.length; locationDetails++) {
                 climbingLocations.push({ 'lat': locationInfo[locationDetails].coordinates.latitude, 'lng': locationInfo[locationDetails].coordinates.longitude });
             }
             initMap(userCoordinates, climbingLocations);
             displayClimbingList(locationInfo, userCoordinates);
-
-
+            $(".loader-container").addClass("hidden");
         }
     });
+
 }
 
 function initMap(coordinates, climbingLocations) {
+    let image = {
+        url: 'images/user.png',
+        size: new google.maps.Size(32, 32),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(0, 32)
+    }
     var options = {
-        zoom: 10.7,
+        zoom: 11.1,
         center: coordinates,
         disableDefaultUI: true,
         styles: mapStyle
@@ -111,6 +148,7 @@ function initMap(coordinates, climbingLocations) {
     //adds marker to users current position
     var userMarker = new google.maps.Marker({
         position: coordinates,
+        icon: image,
         map
     })
 
@@ -125,7 +163,7 @@ function initMap(coordinates, climbingLocations) {
     displayClimbingMarkers(climbingLocations, map);
 }
 function climbingLocationDetails(id) {
-    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/'+id;
+    var myurl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/' + id;
     $.ajax({
         url: myurl,
         headers: {
@@ -143,8 +181,6 @@ function climbingLocationDetails(id) {
 function calcRoute(currentLocation, endLocation) {
     const { lat, lng } = currentLocation;
     const { start, end } = endLocation;
-
-    console.log("THESE ARE THE COORDINATES FOR START AND END DESTINATION: ", currentLocation, endLocation);
 
     directionsToClimbingLocation(currentLocation, endLocation);
 
@@ -185,7 +221,6 @@ function directionsToClimbingLocation(origin, destination) {
         dataType: 'json',
         url: 'https://cors.io/?https://maps.googleapis.com/maps/api/directions/json?origin=' + lat + ',' + lng + '&destination=' + start + ',' + end + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
-            console.log("THIS IS THE RESPONSE FOR DRIVING INSTRUCTIONS: ", response);
             let directions = response.routes[0].legs[0];
             displayDirectionsInfo(directions);
         }
@@ -214,7 +249,6 @@ function displayClimbingMarkers(markers, map) {
     return climbingMarkers;
 }
 function displayClimbingList(info, origin) {
-    console.log("THIS IS INFO: FROM YELP: ", info)
     for (var locationInfo = 0; locationInfo < info.length; locationInfo++) {
         const { name, rating, location, is_closed, coordinates, id, image_url } = info[locationInfo]
         const { latitude, longitude } = coordinates;
@@ -250,6 +284,7 @@ function displayClimbingList(info, origin) {
 
         $(divContainer).append(div);
         directionsBtn.on("click", directionsBtn, function () {
+            $(".loader-container").removeClass("hidden");
             listInfoAndDirectionsInfoToggle();
             var element = this;
             let start = $(element).attr("data-endpointstart");
@@ -282,23 +317,22 @@ function reduceNameLength(name) {
     return name;
 }
 
-function displayInfoTab(info, open){
-    console.log("info to lloKELEK: ", info);
+function displayInfoTab(info, open) {
     let nameH2 = $("<h2>").text(info.name);
     let image = $("<img>").attr("src", info.photos[1]).addClass("location-pic");
     let locationDetails = $("<div>").addClass("location-details");
     let isOpen = $("<div>").addClass("is-closed").text(open);
 
     let todaysNumber = getTodaysDate();
-    
+
     let getMilitaryHours = info.hours[0].open[todaysNumber];
-    let businessHours = getMilitaryHours ? hoursOfOperation(getMilitaryHours.start, getMilitaryHours.end);
+    let businessHours = getMilitaryHours ? hoursOfOperation(getMilitaryHours.start, getMilitaryHours.end) : "N/A";
     let hours = $("<div>").addClass("hours").text("Hours of Operation: " + businessHours);
 
     let address = $("<div>").addClass("address").text(info.location.display_address);
 
     let ratingImg = displayYelpStarReviews(info.rating);
-    let rating  = $("<img>").addClass("rating").attr("src", ratingImg);
+    let rating = $("<img>").addClass("rating").attr("src", ratingImg);
 
     let phone = $("<div>").addClass("phone").text(info.display_phone);
 
@@ -324,11 +358,9 @@ function displayDirectionsInfo(directions) {
     var endAddressText = $("<h4>").addClass("a").text(directions.end_address);
     endAddress.append(endAddressText);
     $(".directions").append(endAddress);
+    $(".loader-container").addClass("hidden");
+}
 
-}
-function dipslayLocationInfoTab(locationInfo) {
-    console.log(locationInfo, "THIS IS THE CLIMBING INFO!!");
-}
 
 /*********** DISPLAYING MARKERS, INFO, AND EDITING INFO - END ***********/
 
@@ -345,38 +377,38 @@ function maintainLocation() {
     }
 }
 
-function hoursOfOperation(num1, num2){
+function hoursOfOperation(num1, num2) {
     var hoursArr = [num1, num2];
     var identifier;
     var standardTime = [];
-    for(var hoursNum = 0; hoursNum < hoursArr.length; hoursNum++){
-        if(hoursArr[hoursNum] === "0000"){
+    for (var hoursNum = 0; hoursNum < hoursArr.length; hoursNum++) {
+        if (hoursArr[hoursNum] === "0000") {
             identifier = "AM";
             let midnight = "12AM";
             standardTime.push(midnight);
         }
-    let parseMe = hoursArr[hoursNum];
-    var militaryTime = parseInt(parseMe);
-    if( militaryTime >= 1300){
-      identifier = "PM";
-      militaryTime -= 1200;
-      let end = convertNumToStandardTime(militaryTime) + identifier;
-      standardTime.push(end); 
-    }
-      identifier = "AM";
-      let start = convertNumToStandardTime(militaryTime) + identifier;
-      standardTime.push(start);
+        let parseMe = hoursArr[hoursNum];
+        var militaryTime = parseInt(parseMe);
+        if (militaryTime >= 1300) {
+            identifier = "PM";
+            militaryTime -= 1200;
+            let end = convertNumToStandardTime(militaryTime) + identifier;
+            standardTime.push(end);
+        }
+        identifier = "AM";
+        let start = convertNumToStandardTime(militaryTime) + identifier;
+        standardTime.push(start);
     }
     return standardTime[0] + " - " + standardTime[1];
-  }
+}
 
-  function convertNumToStandardTime(militaryTime){
-    militaryTime+="";
+function convertNumToStandardTime(militaryTime) {
+    militaryTime += "";
     let numArr = militaryTime.split("");
-    numArr.splice(militaryTime.length-2, militaryTime.length);
+    numArr.splice(militaryTime.length - 2, militaryTime.length);
     let newNum = numArr.join("");
     return newNum;
-  }
+}
 
 function resetLocationList() {
     $(".climbing-list").empty();
@@ -405,37 +437,48 @@ function backButton() {
     submitInfoToggle = true;
     $(".directions").empty();
     $(".info").empty();
+    userDefaultLocation();
+
     userInputLocation()
     textArr.shift();
+    textPlaceholder();
+}
+function textPlaceholder() {
+    if(textArr[0].length > 37){
+        $("input").attr("placeholder", "Current Location");
+        return;
+    }
+    $("input").attr("placeholder", textArr[0]);
+
 }
 
-function getTodaysDate(){
+function getTodaysDate() {
     let date = new Date();
     let today = date.getDay();
     return today;
 }
 
-function displayYelpStarReviews(rating){
-    switch(rating){
+function displayYelpStarReviews(rating) {
+    switch (rating) {
         case 1:
             return 'images/yelp-review-images/regular_1.png';
         case 1.5:
-            return 'images/yelp-review-images/regular_1_half.png';  
+            return 'images/yelp-review-images/regular_1_half.png';
         case 2:
-            return 'images/yelp-review-images/regular_2.png'; 
+            return 'images/yelp-review-images/regular_2.png';
         case 2.5:
-            return 'images/yelp-review-images/regular_2_half.png';    
+            return 'images/yelp-review-images/regular_2_half.png';
         case 3:
-            return 'images/yelp-review-images/regular_3.png';    
+            return 'images/yelp-review-images/regular_3.png';
         case 3.5:
-            return 'images/yelp-review-images/regular_3_half.png'; 
+            return 'images/yelp-review-images/regular_3_half.png';
         case 4:
-            return 'images/yelp-review-images/regular_4.png';                                            
+            return 'images/yelp-review-images/regular_4.png';
         case 4.5:
-            return 'images/yelp-review-images/regular_4_half.png';            
+            return 'images/yelp-review-images/regular_4_half.png';
         case 5:
-            return 'images/yelp-review-images/regular_5.png';            
-         default:
+            return 'images/yelp-review-images/regular_5.png';
+        default:
             return 'images/yelp-review-images/regular_0.png';
 
     }
