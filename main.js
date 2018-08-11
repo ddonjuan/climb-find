@@ -8,9 +8,7 @@ function initApp() {
     userDefaultLocation();
     $(".submit-index").click(landingPage);
     $(".submit").click(function () {
-        console.log("text Array at submit: ", textArr, saveText);
         if(landingPageUserLocation){
-            console.log("LANDIN PAGE USER LOCATION FIRED");
             textArr.shift();
             userDefaultLocation();
             landingPageUserLocation = false;
@@ -26,6 +24,7 @@ function initApp() {
     $(".close-btn, .confirm-btn").click(function(){
         $(".modal-container").addClass("hidden");
         $(".main-input").attr("placeholder", "Current Location");
+        $(".landing-page-text").attr("placeholder", "Current Location");
         saveText = null;
         $("#map-area").empty();
         userDefaultLocation();
@@ -42,21 +41,7 @@ var landingPageUserLocation = false;
 /*********** INITIALIZING APP AND GLOBALS - END ***********/
 
 /***********************API CALLS - START********************************/
-function landingPage() {
-    $(".cover-page-container").addClass("hidden");
-    $(".main-container").removeClass("hidden");
-    var landingPageText = $(".landing-page-text").val();
-    console.log("LANDIN PAGE TEXT BEOFRE ANYTHING: ", landingPageText)
-    console.log("THIS IS THE LANDING PAGE TEXT: ", landingPageText);
-    if(landingPageText.length === 0){
-        userInputLocation();
-        return;
-    }
-    saveText=landingPageText;
-    landingPageUserLocation = true;
-    userInputLocation();
 
-}
 function userDefaultLocation() {
     var currentLocation;
     $.ajax({
@@ -88,8 +73,11 @@ function userInputLocation() {
         dataType: 'JSON',
         url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + text + '&key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss',
         success: function (response) {
-            console.log("THIS IS THE RESPONSE ON LOCATION COORDINATES: ", response);
             if(response.status === 'ZERO_RESULTS'){
+                $(".loader-container").addClass("hidden");
+                $(".modal-container").removeClass("hidden");
+                $(".cover-page-container").removeClass("hidden");
+                $(".main-container").addClass("hidden");
             }
             var coordinates = {
                 lat: response.results[0].geometry.location.lat,
@@ -124,7 +112,7 @@ function climbingLocations(userCoordinates) {
             }
             initMap(userCoordinates, climbingLocations);
             displayClimbingList(locationInfo, userCoordinates);
-            $(".loader-container").addClass("hidden");
+            setTimeout(function(){$(".loader-container").addClass("hidden")}, 1000);
         }
     });
 
@@ -231,6 +219,22 @@ function directionsToClimbingLocation(origin, destination) {
 
 /*********** DISPLAYING MARKERS, INFO, AND EDITING INFO - START ***********/
 
+function landingPage() {
+    $(".cover-page-container").addClass("hidden");
+    $(".main-container").removeClass("hidden");
+    var landingPageText = $(".landing-page-text").val();
+
+    if(landingPageText.length === 0){
+        userInputLocation();
+        $(".main-input").attr("placeholder", "Current Location");
+        return;
+    }
+    saveText = landingPageText;
+    landingPageUserLocation = true;
+    userInputLocation();
+
+}
+
 function displayClimbingMarkers(markers, map) {
     var image = {
         url: 'images/mission.png',
@@ -285,6 +289,7 @@ function displayClimbingList(info, origin) {
         $(divContainer).append(div);
         directionsBtn.on("click", directionsBtn, function () {
             $(".loader-container").removeClass("hidden");
+            showGymInfo();
             listInfoAndDirectionsInfoToggle();
             var element = this;
             let start = $(element).attr("data-endpointstart");
@@ -338,11 +343,13 @@ function displayInfoTab(info, open) {
 
     locationDetails.append(hours, address, rating, phone);
     $(".info").append(nameH2, image, locationDetails);
+    setTimeout(function(){$(".loader-container").addClass("hidden")}, 1000);
+
 }
 
 function displayDirectionsInfo(directions) {
     var startAddress = $("<div>").addClass("start-location");
-    var startAddressText = $("<h4>").addClass("a").text("Start: " + directions.start_address);
+    var startAddressText = $("<h4>").addClass("a").text("A: " + directions.start_address);
     startAddress.append(startAddressText);
 
     var listContainer = $("<div>").addClass("list-container");
@@ -355,10 +362,10 @@ function displayDirectionsInfo(directions) {
     $(".directions").append(listContainer);
 
     var endAddress = $("<div>").addClass("end-location");
-    var endAddressText = $("<h4>").addClass("a").text(directions.end_address);
+    var endAddressText = $("<h4>").addClass("a").text("B: "+directions.end_address);
     endAddress.append(endAddressText);
     $(".directions").append(endAddress);
-    $(".loader-container").addClass("hidden");
+    // setTimeout(function(){$(".loader-container").addClass("hidden")}, 1000);
 }
 
 
@@ -421,16 +428,16 @@ function listInfoAndDirectionsInfoToggle() {
 
 function showGymInfo() {
     $(".info").removeClass("hidden");
-    $(".gym-tab").addClass("tabClicked");
+    $(".gym-tab").css("background-color", "rgba(0,0,0,0)");
     $(".directions").addClass("hidden");
-    $(".directions-tab").removeClass("tabClicked");
+    $(".directions-tab").css("background-color", "");
 }
 
 function showDirectionsInfo() {
     $(".directions").removeClass("hidden");
-    $(".directions-tab").addClass("tabClicked");
+    $(".directions-tab").css("background-color", "rgba(0,0,0,0)");
     $(".info").addClass("hidden");
-    $(".gym-tab").removeClass("tabClicked");
+    $(".gym-tab").css("background-color", "");
 }
 
 function backButton() {
@@ -438,13 +445,11 @@ function backButton() {
     $(".directions").empty();
     $(".info").empty();
     userDefaultLocation();
-
     userInputLocation()
     textArr.shift();
-    textPlaceholder();
 }
 function textPlaceholder() {
-    if(textArr[0].length > 37){
+    if(textArr[0].length >= 30){
         $("input").attr("placeholder", "Current Location");
         return;
     }
