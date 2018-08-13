@@ -532,6 +532,9 @@ input{
     .modal-info{
         width:84%;
     }
+    .error-input{
+        width:63%;
+    }
     .confirm-btn{
         width:27%;
     }
@@ -955,6 +958,9 @@ input{
     iPad 3
     **********/
     @media only screen and (min-width: 1025px) and (max-width:1223px){
+        .loader{
+            margin-top: 20%;
+        }
         .climbing-list-container{
             width:40%;
             left:4%;
@@ -970,6 +976,9 @@ input{
         }
     }
     @media only screen and (min-width: 1224px) and (max-width: 1285px){
+        .loader{
+            margin-top: 12%;
+        }
         .list-info h4{
             width:68%;
         }
@@ -989,6 +998,9 @@ input{
     /* Large screens ----------- */
     @media only screen  and (min-width : 1824px) {
     /* Styles */
+    .loader{
+        margin-top: 15%;
+    }
     }
     
     /* iPhone 4 ----------- */
