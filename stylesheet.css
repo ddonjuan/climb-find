@@ -230,8 +230,8 @@ input{
     font-size: 1em;
     padding-top:1%;
     font-family: "KeepCalm-Medium";
-    box-shadow: 0 5px 5px 0 rgba(255,255,255,.4),
-    5px 5px 5px 0 rgba(255,255,255,.4);
+    box-shadow: 0 1px 7px 0 rgba(255,255,255,.4),
+    1px 1px 1px 0 rgba(255,255,255,.4);
 
 }
 .get-directions:hover{
@@ -267,7 +267,7 @@ input{
     margin-right:auto;
 }
 .location-details{
-    overflow: scroll;
+    overflow: hidden;
     height:28%;
     background-color: rgba(0,0,0,.7);
 
@@ -382,11 +382,11 @@ input{
     background-color: rgba(0,0,0,.3)
   }
   .modal-info{
-    background-color: rgb(255,255,255,.6);
-    margin: 12% auto;
+    background-color: rgb(0,0,0,.3);
+    margin: 4% auto;
     color: white;
     width: 56%;
-    height: 55%;
+    height: 70%;
     padding:3%;
     box-shadow: 0 5px 8px 0 rgba(0,0,0,.7),
       0 7px 20px 0 rgba(0,0,0,.2);
@@ -396,26 +396,57 @@ input{
     font-size:1.4em;
   }
   .modal-info-container{
-    background-color:rgba(0,0,0,.3);
+    background-color: rgba(225,255,255,1);
+    color:black;
     position: relative;
     height:80%;
     margin:5%;
     padding:1%;
     top:5%;
   }
+  .modal-info-container h3{
+      text-align: center;
+      font-size: 1.8em;
+  }
+  .modal-info-container h4{
+      text-align: center;
+      font-size: 1.3em;
+  }
   .confirm-btn{
-    background-color: rgba(162, 63, 44,.8);
+    background-color: rgba(0, 0, 0,.8);
     display: flex;
     position: relative;
     font-size: 1em;
     text-align: center;
     justify-content: center;
     margin: auto;
-    top: 36%;
+    top: 5%;
     height: 16%;
     width: 18%;
     color: white;
     border-radius: 1%;
+  }
+  .error-input{
+      background-color: rgba(0,0,0,.3);
+      width:21%;
+      height: 20%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+  }
+  .confirm-btn:hover{
+    background-color: rgba(0, 0, 0,.4);
+
+  }
+  .modal-info-container h3,h4{
+      margin:5%;
+  }
+  .modal-info-container h3{
+      font-size: 1.8em;
+  }
+  .modal-info-container h4{
+      font-size: 1em;
   }
 
 /******MODAL END******/
@@ -498,6 +529,12 @@ input{
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-width : 320px) and (max-width : 480px) {
     /* Styles */
+    .modal-info{
+        width:84%;
+    }
+    .confirm-btn{
+        width:27%;
+    }
     .cover-title{
         width:45%;
         position: relative;
@@ -515,6 +552,9 @@ input{
     }
     .cover-input-container button{
         font-size:.6em;
+    }
+    .loader{
+        margin-top:50%;
     }
     .header{
         width:100%;
@@ -570,14 +610,21 @@ input{
         width: 60px;
         height: 57px;
     }
+    .location-pic{
+        height:31%;
+        width:42%;
+    }
     .location-name{
         margin-top: 0;
         font-size: .9em;
     }
+    .list h4{
+        width:68%;
+    }
     .list h5{
         font-size: 8px;
         margin-top: 0;
-        margin-bottom:11%;
+        margin-bottom:3%;
     }
     .get-directions{
         font-size: .9em;
@@ -586,7 +633,237 @@ input{
     .is-closed{
         font-size: .8em;
     }
+    .nav-list{
+        font-size: .75em;
+        height:16%;
+    }
+    .info{
+        overflow: scroll;
+        font-size: .9em;
+    }
+    .info h2{
+        font-size: 1.1em;
+        margin-top: 3%;
+    }
+    .info img:nth-child(1){
+        height:62%;
+    }
+    .location-details{
+
+        height:45%;
+    }
+    .list-container{
+        height:50%;
+        overflow: scroll;
+    }
+    .start-location, .end-location{
+        font-size: .7em;
+    }
+    .start-location{
+        height:16%;
+    }
+    .end-location{
+        height:14.92%;
+    }
+    .rating{
+        height:11%;
+    }
 }
+@media only screen and (min-width: 481px) and (max-width: 581px){
+    .cover-title h1{
+        text-align: center;
+    }
+    .cover-input-container{
+        top: 33%;
+        font-size: .9em;
+        width: 64%;
+    }
+    .header{
+        width:100%;
+    }
+    .mountain{
+        width: 46%;
+        height: 73%;
+        left: 26%;
+        bottom: 4%;
+    }
+    .main-input{
+        top: 62%;
+        right: 23%;
+        width: 64%;
+        height: 27%;
+        margin-top: 0;
+        margin-left: 0;
+        box-shadow: none;
+        font-size: .8em;
+    }
+    .submit{
+        font-size: 0.1em;
+        top: 62%;
+        right: 23%;
+        height: 34%;
+        width: 17%;
+        margin-top: 0;
+        box-shadow: none;
+    }
+    #map-container{
+        display:block;
+        height:50%;
+        width:99%;
+        margin: auto;
+        top:0%;
+    }
+    .climbing-list-container{
+        left:0%;
+        top:0%;
+        width: 99%;
+        height:49.7%;
+    }
+    .list{
+        height:47%;
+    }
+    .nav-list{
+        height:13%;
+    }
+    .directions, .info{
+        height:85%;
+    }
+    .location-details{
+        height:50%;
+    }
+    .start-location{
+        height:14%;
+    }
+    .end-location{
+        height: 12.4%;
+        top: .3%;
+    }
+    .loader{
+        margin-top: 47%;
+    }
+}
+@media only screen and (min-width: 582px) and (max-width: 767px){
+    .header{
+        width:100%;
+        height:95%;
+    }
+    .mountain{
+        width:33%;
+        height:63%;
+        left:21%;
+    }
+    .main-input{
+        top:21%;
+        right:20%;
+        height:24%;
+    }
+    .submit{
+        font-size: .1em;
+        top:20%;
+        right:20%;
+        height: 32%;
+        width: 10%;
+    }
+     #map-container{
+         display: block;
+         width:99%;
+         height: 55%;
+         margin: auto;
+         top:0;
+         left: 0;
+         bottom: 0;
+     }
+     .climbing-list-container{
+        width: 99%;
+        height: 44%;
+        top:0;
+        left: 0;
+        margin: auto;
+     }
+     .list{
+         height: 55%;
+     }
+     .nav-list{
+         height: 16%;
+     }
+     .location-details{
+         height: 70%;
+     }
+     .location-pic{
+         width: 63%;
+         height: 63%;
+     }
+     .list-container{
+         height: 48%;
+     }
+     .start-location{
+         height: 15%;
+     }
+     .end-location{
+         height: 12.92%;
+     }
+     .loader{
+         top:38%;
+     }
+}
+@media only screen and (min-height:481px ) and (max-height: 589px){
+    #map-container{
+        height:43%;
+        width:99%;
+    }
+    .list-info h5{
+        margin-bottom: 3%;
+    }
+    .is-closed{
+        margin-left: 3%;
+    }
+    .info h2{
+        font-size: .9em;
+    }
+    .nav-list{
+        font-size: .7em;
+        height:16%;
+    }
+    .info h2{
+        font-size: .9em;
+    }
+    .location-pic{
+        width:70%;
+        height:42%;
+    }
+    .location-details{
+        font-size: .8em;
+        overflow: hidden;
+    }
+    .list-container{
+        height:67%;
+    }
+    .end-location{
+        top:0%;
+    }
+}
+@media only screen and (min-height:600px) and (max-height:667px){
+    .climbing-list-container{
+        width:99%;
+    }
+    .list-info h4{
+        font-size: .9em;
+        width:64%;
+    }
+    .list-info h5{
+        font-size: .7em;
+        margin-bottom: 3%;
+        width:67%;
+    }
+    .list h4{
+        width:66%;
+    }
+    .location-image{
+        width:80px;
+        height:65px;
+    }
+}
+/* @media only screen and (min) */
     
     /* Smartphones (landscape) ----------- */
     /* @media only screen and (min-width : 321px) { */
@@ -599,9 +876,71 @@ input{
     /* } */
     
     /* iPads (portrait and landscape) ----------- */
-    @media only screen and (min-width : 768px) and (max-width : 1024px) {
+    @media only screen and (min-width : 768px) and (max-width : 810px) {
     /* Styles */
+    #map-container{
+        width:58%;
     }
+    .climbing-list-container{
+        width:39%;
+        left:3%;
+    }
+    .list-info h4{
+        margin-top: 1%;
+        width:60%;
+    }  
+    .list-info h5{
+        width:60%;
+        font-size: .7em;
+        margin-top: 7%;
+        margin-bottom: 9%;
+    } 
+    .nav-list{
+        font-size:.7em;
+    } 
+    .info{
+        font-size:1em;
+        text-align: center;
+    }
+    .location-details{
+        overflow: hidden;
+    }
+    .start-location{
+        height:8%;
+    }
+    .loader{
+        margin-top:30%;
+    }
+}
+@media only screen and (min-width: 811px) and (max-width: 1024px){
+    .climbing-list-container{
+        width:38%;
+        left:5%;
+    }
+    .nav-list{
+        font-size: .7em;
+    }
+    .info{
+        text-align: center;
+    }
+    .info h2{
+        font-size: 1.4em;
+    }
+    .list-info h4{
+        margin-top: 1%;
+        width:60%;
+    }
+    .list-info h5{
+        margin-top: 3%;
+        width:65%;
+    }
+    .start-location{
+        height:8%;
+    }
+    .end-location{
+        top:1.3%;
+    }
+}
     
     /* iPads (landscape) ----------- */
     /* @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) { */
@@ -615,6 +954,26 @@ input{
     /**********
     iPad 3
     **********/
+    @media only screen and (min-width: 1025px) and (max-width:1223px){
+        .climbing-list-container{
+            width:40%;
+            left:4%;
+        }
+        .list-info h4{
+            width:65%;
+            font-size: 1.1em;
+            margin-top: 3%;
+        }
+        .list-info h5{
+            width:65%;
+            margin-top: 4%;
+        }
+    }
+    @media only screen and (min-width: 1224px) and (max-width: 1285px){
+        .list-info h4{
+            width:68%;
+        }
+    }
     @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio : 2) {
     /* Styles */
     }
@@ -765,7 +1124,7 @@ input{
     }
 }
 @media only screen  and (min-width : 1224px) {
-    /* Styles */
+    /* Styles
     } */
 
 /******MEDIA QUERIES END******/

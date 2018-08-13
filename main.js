@@ -76,6 +76,7 @@ function userInputLocation() {
             if(response.status === 'ZERO_RESULTS'){
                 $(".loader-container").addClass("hidden");
                 $(".modal-container").removeClass("hidden");
+                $(".error-input").text(saveText);
                 $(".cover-page-container").removeClass("hidden");
                 $(".main-container").addClass("hidden");
             }
