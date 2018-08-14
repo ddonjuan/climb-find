@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="stylesheet.css">
+    <title>Climb Finder</title>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGQuS3YmAZpYvRguVUHYUSSwExvQqM-Ss&callback=initMap"
+        type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="main.js"></script>
+
+</head>
+
+<body>
+    <div class="loader-container hidden">
+        <div class="loader"></div>
+        <div class="logo-name">Climb Finder</div>
+    </div>
+    <div class="modal-container hidden">
+        <div class="modal-info">
+            <span class="close-btn">&times</span>
+            <div class="modal-info-container">
+                <h3>Location was not found</h3>
+                <div class="error-input"></div>
+                <h4>Please try a different location</h4>
+                <button class="confirm-btn">Okay</button>
+            </div>
+        </div>
+    </div>
+    <div class="overall">
+        <div class="cover-page-container inner">
+            <div class="cover-title">
+                <h1>Climb Finder</h1>
+            </div>
+            <div class="cover-input-container">
+                <input class="landing-page-text" placeholder="Current Location" type="text">
+                <button class="submit-index">Find A Climb</button>
+            </div>
+        </div>
+        <div class="main-container inner hidden">
+
+            <div class="header-container">
+                <div class="header">
+                    <div class="mountain-image"></div>
+                    <img class="mountain" src="images/mountain-logo.png"></img>
+                    <input class="main-input" placeholder="Current Location" type="text">
+                    <button class="submit">Find A Climb</button>
+                </div>
+            </div>
+
+            <div class="info-container">
+                <div id="map-container">
+                    <div id="map-area">
+                    </div>
+                </div>
+
+                <div class="climbing-list-container">
+                    <div class="driving-directions inner hidden">
+                        <div class="location-content">
+                            <div class="nav-list">
+                                <div class="gym-tab">Details</div>
+                                <div class="directions-tab">Directions</div>
+                                <div class="back">Back To List</div>
+                            </div>
+                            <div class="info inner-layer">
+                            </div>
+                            <div class="directions inner-layer hidden"></div>
+
+                        </div>
+                    </div>
+                    <div class="climbing-list inner"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>
