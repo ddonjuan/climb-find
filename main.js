@@ -26,6 +26,7 @@ function initApp() {
         $(".main-input").attr("placeholder", "Current Location");
         $(".landing-page-text").attr("placeholder", "Current Location");
         saveText = null;
+        textArr.shift();
         $("#map-area").empty();
         userDefaultLocation();
     })
@@ -450,9 +451,17 @@ function backButton() {
     textArr.shift();
 }
 function textPlaceholder() {
-    if(textArr[0].length >= 30){
-        $("input").attr("placeholder", "Current Location");
-        return;
+    var numsInString = 0;
+    if(textArr[0].length >= 20){
+            for(var inputChar=0; inputChar < textArr[0].length; inputChar++){
+                if(!isNaN(textArr[0][inputChar])){
+                    numsInString++;
+                    if(numsInString > 20){
+                        $("input").attr("placeholder", "Current Location");
+                        return;
+                    }
+                }
+            }
     }
     $("input").attr("placeholder", textArr[0]);
 
