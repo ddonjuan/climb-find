@@ -333,6 +333,7 @@ input{
     position: relative;
     height: 100%;
     background-color: rgba(0,0,0,.7);
+    text-align: center;
   }
   .nav-list{
     height:8%;
@@ -529,6 +530,9 @@ input{
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-width : 320px) and (max-width : 480px) {
     /* Styles */
+    .location-content{
+        text-align: center;
+    }
     .modal-info{
         width:84%;
     }
@@ -744,11 +748,17 @@ input{
     .loader{
         margin-top: 47%;
     }
+    .location-content{
+        text-align: center;
+    }
 }
 @media only screen and (min-width: 582px) and (max-width: 767px){
     .header{
         width:100%;
         height:95%;
+    }
+    .location-content{
+        text-align: center;
     }
     .mountain{
         width:33%;
@@ -814,6 +824,9 @@ input{
         height:43%;
         width:99%;
     }
+    .location-content{
+        text-align: center;
+    }
     .list-info h5{
         margin-bottom: 3%;
     }
@@ -865,13 +878,81 @@ input{
         width:80px;
         height:65px;
     }
+    .location-content{
+        text-align: center;
+    }
 }
 /* @media only screen and (min) */
     
     /* Smartphones (landscape) ----------- */
-    /* @media only screen and (min-width : 321px) { */
+    @media only screen and (min-width : 321px) and (max-width : 480px) and (orientation: landscape) {
     /* Styles */
-    /* } */
+        .cover-input-container{
+            height:10%;
+        }
+        .landing-page-text{
+            height:83%;
+        }
+        .loader{
+            font-size: .5em;
+            margin-top: 27%;
+        }
+        .logo-name{
+            font-size: 1em;
+        }
+        .cover-title{
+            width:84%;
+        }
+        .mountain{
+            left:0%;
+            width: 24%;
+            height: 99%;
+            left:none;
+            bottom: none;
+        }
+        .main-input{
+            top:42%;
+            left: 1%;
+            right: none;
+            width: 37%;
+            height: 31%;
+        }
+        .submit{
+            left: 1%;
+            top: 42%;
+            font-size: 7px;
+            height: 43%;
+            width:12%;
+            right: none;
+        }
+        #map-container{
+            height:84%;
+            width:82%;
+        }
+        .info-container{
+            overflow: scroll;
+        }
+        .climbing-list{
+            width:77%;
+            height: 97%;
+            margin: 0%;
+            margin-left: 11%;
+        }
+        .list{
+            height: 59%;
+        }
+        .driving-directions{
+            width:77%;
+            margin:0%;
+            margin-left: 11%;
+        }
+        .nav-list div{
+            line-height: 25px;
+        }
+        .location-details{
+            height: 100%;
+        }
+    }
     
     /* Smartphones (portrait) ----------- */
     /* @media only screen and (max-width : 320px) { */
@@ -881,6 +962,9 @@ input{
     /* iPads (portrait and landscape) ----------- */
     @media only screen and (min-width : 768px) and (max-width : 810px) {
     /* Styles */
+    .location-content{
+        text-align: center;
+    }
     #map-container{
         width:58%;
     }
@@ -920,6 +1004,12 @@ input{
         width:38%;
         left:5%;
     }
+    .lodaer{
+        margin-top: 20%;
+    }
+    .location-content{
+        text-align: center;
+    }
     .nav-list{
         font-size: .7em;
     }
@@ -946,9 +1036,24 @@ input{
 }
     
     /* iPads (landscape) ----------- */
-    /* @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) { */
-    /* Styles */
-    /* } */
+    @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) {
+        .list-info h5{
+            margin-bottom: 5%;
+        }
+        .mountain{
+            width: 50%;
+        }
+        .header{
+            width: 76%;
+        }
+        .start-location{
+            height:10%;
+        }
+        .end-location{
+            top:.3%;
+            height: 8.85%;
+        }
+    }
     
     /* iPads (portrait) ----------- */
     /* @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : portrait) { */
@@ -974,13 +1079,19 @@ input{
             width:65%;
             margin-top: 4%;
         }
+        .location-content{
+            text-align: center;
+        }
     }
     @media only screen and (min-width: 1224px) and (max-width: 1285px){
         .loader{
-            margin-top: 12%;
+            margin-top: 20%;
         }
         .list-info h4{
             width:68%;
+        }
+        .location-content{
+            text-align: center;
         }
     }
     @media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio : 2) {
@@ -991,7 +1102,25 @@ input{
     /* Styles */
     }
     /* Desktops and laptops ----------- */
-    @media only screen  and (min-width : 1224px) {
+    @media only screen  and (min-width : 1424px) {
+        .loader{
+            margin-top: 20%;
+        }
+        .location-content{
+            text-align: center;
+        }
+        .driving-directions{
+            height:96%;
+        }
+        .location-content{
+            height: 96%;
+        }
+        .directions{
+            height: 96%;
+        }
+        .end-location{
+            top: 6.3%;
+        }
     /* Styles */
     }
     
@@ -999,7 +1128,10 @@ input{
     @media only screen  and (min-width : 1824px) {
     /* Styles */
     .loader{
-        margin-top: 15%;
+        margin-top: 20%;
+    }
+    .location-content{
+        text-align: center;
     }
     }
     
